@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { SHEET_CONSTANTS } from 'src/constants/sheet.constant';
+import { ExcelDateToJSDate } from '../utils/convert';
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 
 @Injectable()
@@ -295,7 +296,9 @@ export class GoogleSheetService {
                     isStop=true;
                     break;
                 };
-                if (column === 'A') date = value;
+                if (column === 'A') {
+                    date = ExcelDateToJSDate(value);
+                }
                 if (column === 'B') category = value;
                 if (column === 'C') amount = value;
                 if (column === 'D') description = value;
@@ -305,9 +308,7 @@ export class GoogleSheetService {
                 date,category, amount, description
             })
         }
-        return {
-            daily_expense: responses
-        };
+        return responses;
     }
 
 }
