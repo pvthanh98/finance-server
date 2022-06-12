@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { SHEET_CONSTANTS } from 'src/constants/sheet.constant';
+import { CreateExpenseDto } from '../dashboard/dto/add-expense.dto';
 import { ExcelDateToJSDate } from '../utils/convert';
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 
@@ -309,6 +310,28 @@ export class GoogleSheetService {
             })
         }
         return responses;
+    }
+
+    async addExpenseByDaily(createExpenseDto: CreateExpenseDto){
+        const [year, month, day] = createExpenseDto.date.split('-')
+        const sheet = this.doc.sheetsByTitle['Expenses'];
+        await sheet.loadCells('E1:E2');
+        const blankIndexCell = sheet.getCellByA1(`E2`);
+        await sheet.loadCells(`A${blankIndexCell.value-1}:D${blankIndexCell.value+1}`);
+        
+        const dateBlankCell = sheet.getCellByA1(`A${blankIndexCell.value}`);
+        const categoryBlankCell = sheet.getCellByA1(`B${blankIndexCell.value}`);
+        const amountBlankCell = sheet.getCellByA1(`C${blankIndexCell.value}`);
+        const descriptionBlankCell = sheet.getCellByA1(`D${blankIndexCell.value}`);
+
+        dateBlankCell.value = `=DATE(${year},${month},${day})`;
+        categoryBlankCell.value= createExpenseDto.category;
+        amountBlankCell.value  = createExpenseDto.amount;
+        descriptionBlankCell.value  = createExpenseDto.description;
+        blankIndexCell.value += 1;
+        
+        await sheet.saveUpdatedCells();
+        return true
     }
 
 }

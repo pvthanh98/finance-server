@@ -1,6 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GoogleSheetService } from '../shared_modules/google_sheet.service';
+import { CreateExpenseDto } from './dto/add-expense.dto';
 
 @Controller('dashboard')
 export class DashboardController {
@@ -29,6 +30,11 @@ export class DashboardController {
     @Get('expense-daily')
     expenseByDaily(){
         return this.googleSheetService.getDailyExpense();
+    }
+
+    @Post('expense-daily')
+    addExpenseByDaily(@Body() createExpenseDto: CreateExpenseDto){
+        return this.googleSheetService.addExpenseByDaily(createExpenseDto);
     }
 
 }
