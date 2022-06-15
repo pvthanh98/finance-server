@@ -316,20 +316,24 @@ let GoogleSheetService = class GoogleSheetService {
         return responses;
     }
     async addExpenseByDaily(createExpenseDto) {
-        const [year, month, day] = createExpenseDto.date.split('-');
         const sheet = this.doc.sheetsByTitle['Expenses'];
         await sheet.loadCells('E1:E2');
         const blankIndexCell = sheet.getCellByA1(`E2`);
-        await sheet.loadCells(`A${blankIndexCell.value - 1}:D${blankIndexCell.value + 1}`);
-        const dateBlankCell = sheet.getCellByA1(`A${blankIndexCell.value}`);
-        const categoryBlankCell = sheet.getCellByA1(`B${blankIndexCell.value}`);
-        const amountBlankCell = sheet.getCellByA1(`C${blankIndexCell.value}`);
-        const descriptionBlankCell = sheet.getCellByA1(`D${blankIndexCell.value}`);
-        dateBlankCell.value = `=DATE(${year},${month},${day})`;
-        categoryBlankCell.value = createExpenseDto.category;
-        amountBlankCell.value = createExpenseDto.amount;
-        descriptionBlankCell.value = createExpenseDto.description;
-        blankIndexCell.value += 1;
+        await sheet.loadCells(`A${blankIndexCell.value - 1}:D${blankIndexCell.value + createExpenseDto.expenses.length}`);
+        let blankIndexValue = blankIndexCell.value;
+        for (const expense of createExpenseDto.expenses) {
+            const [year, month, day] = expense.date.split('-');
+            const dateBlankCell = sheet.getCellByA1(`A${blankIndexValue}`);
+            const categoryBlankCell = sheet.getCellByA1(`B${blankIndexValue}`);
+            const amountBlankCell = sheet.getCellByA1(`C${blankIndexValue}`);
+            const descriptionBlankCell = sheet.getCellByA1(`D${blankIndexValue}`);
+            dateBlankCell.value = `=DATE(${year},${month},${day})`;
+            categoryBlankCell.value = expense.category;
+            amountBlankCell.value = expense.amount;
+            descriptionBlankCell.value = expense.description;
+            blankIndexValue += 1;
+        }
+        blankIndexCell.value = blankIndexValue;
         await sheet.saveUpdatedCells();
         return true;
     }

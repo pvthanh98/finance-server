@@ -1,6 +1,14 @@
-import { IsString, IsNumber } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsString, IsNumber, IsArray, ValidateNested } from 'class-validator';
 
 export class CreateExpenseDto {
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Expense)
+  expenses: Array<Expense>
+}
+
+class Expense {
   @IsString()
   category: string;
 
@@ -13,3 +21,4 @@ export class CreateExpenseDto {
   @IsNumber()
   amount: string;
 }
+

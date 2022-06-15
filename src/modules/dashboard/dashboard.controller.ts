@@ -1,8 +1,10 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { GoogleSheetService } from '../shared_modules/google_sheet.service';
 import { CreateExpenseDto } from './dto/add-expense.dto';
 
+@UseGuards(JwtAuthGuard)
 @Controller('dashboard')
 export class DashboardController {
     constructor(private googleSheetService: GoogleSheetService){}

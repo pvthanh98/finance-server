@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DashboardController = void 0;
 const common_1 = require("@nestjs/common");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const google_sheet_service_1 = require("../shared_modules/google_sheet.service");
 const add_expense_dto_1 = require("./dto/add-expense.dto");
 let DashboardController = class DashboardController {
@@ -77,6 +78,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], DashboardController.prototype, "addExpenseByDaily", null);
 DashboardController = __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Controller)('dashboard'),
     __metadata("design:paramtypes", [google_sheet_service_1.GoogleSheetService])
 ], DashboardController);

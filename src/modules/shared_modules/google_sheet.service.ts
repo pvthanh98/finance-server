@@ -19,16 +19,16 @@ export class GoogleSheetService {
         this.doc.loadInfo();
     }
 
-    async loadOverview () {
+    async loadOverview() {
         // await this.doc.loadInfo();
         const sheet = this.doc.sheetsByTitle['Dashboard'];
         await sheet.loadCells('A5:D11');
         return {
-            usage:{
+            usage: {
                 daily: sheet.getCellByA1('B5').value,
                 monthly: sheet.getCellByA1('B6').value,
                 yearly: sheet.getCellByA1('B7').value,
-            }, 
+            },
             income: {
                 monthly: sheet.getCellByA1('C8').value,
                 yearly: sheet.getCellByA1('C9').value,
@@ -40,7 +40,7 @@ export class GoogleSheetService {
         }
     }
 
-    async expenseByCategory(){
+    async expenseByCategory() {
         const sheet = this.doc.sheetsByTitle['Dashboard'];
         await sheet.loadCells('A15:D23');
         return {
@@ -161,7 +161,7 @@ export class GoogleSheetService {
         }
     }
 
-    async getMonthlyLimitation(){
+    async getMonthlyLimitation() {
         const sheet = this.doc.sheetsByTitle['Dashboard'];
         await sheet.loadCells('A27:D35');
         return [
@@ -170,62 +170,62 @@ export class GoogleSheetService {
                 currentAmount: sheet.getCellByA1('B27').value,
                 limit: sheet.getCellByA1('C27').value,
                 remainingCost: sheet.getCellByA1('D27').value,
-                isOverExpense: sheet.getCellByA1('D27').value <=0
+                isOverExpense: sheet.getCellByA1('D27').value <= 0
             },
             {
                 category: sheet.getCellByA1('A28').value,
                 currentAmount: sheet.getCellByA1('B28').value,
                 limit: sheet.getCellByA1('C28').value,
                 remainingCost: sheet.getCellByA1('D28').value,
-                isOverExpense: sheet.getCellByA1('D28').value <=0
-            },{
+                isOverExpense: sheet.getCellByA1('D28').value <= 0
+            }, {
                 category: sheet.getCellByA1('A29').value,
                 currentAmount: sheet.getCellByA1('B29').value,
                 limit: sheet.getCellByA1('C29').value,
                 remainingCost: sheet.getCellByA1('D29').value,
-                isOverExpense: sheet.getCellByA1('D29').value <=0
-            },{
+                isOverExpense: sheet.getCellByA1('D29').value <= 0
+            }, {
                 category: sheet.getCellByA1('A30').value,
                 currentAmount: sheet.getCellByA1('B30').value,
                 limit: sheet.getCellByA1('C30').value,
                 remainingCost: sheet.getCellByA1('D30').value,
-                isOverExpense: sheet.getCellByA1('D30').value <=0
-            },{
+                isOverExpense: sheet.getCellByA1('D30').value <= 0
+            }, {
                 category: sheet.getCellByA1('A31').value,
                 currentAmount: sheet.getCellByA1('B31').value,
                 limit: sheet.getCellByA1('C31').value,
                 remainingCost: sheet.getCellByA1('D31').value,
-                isOverExpense: sheet.getCellByA1('D31').value <=0
-            },{
+                isOverExpense: sheet.getCellByA1('D31').value <= 0
+            }, {
                 category: sheet.getCellByA1('A32').value,
                 currentAmount: sheet.getCellByA1('B32').value,
                 limit: sheet.getCellByA1('C32').value,
                 remainingCost: sheet.getCellByA1('D32').value,
-                isOverExpense: sheet.getCellByA1('D32').value <=0
-            },{
+                isOverExpense: sheet.getCellByA1('D32').value <= 0
+            }, {
                 category: sheet.getCellByA1('A33').value,
                 currentAmount: sheet.getCellByA1('B33').value,
                 limit: sheet.getCellByA1('C33').value,
                 remainingCost: sheet.getCellByA1('D33').value,
-                isOverExpense: sheet.getCellByA1('D33').value <=0
-            },{
+                isOverExpense: sheet.getCellByA1('D33').value <= 0
+            }, {
                 category: sheet.getCellByA1('A34').value,
                 currentAmount: sheet.getCellByA1('B34').value,
                 limit: sheet.getCellByA1('C34').value,
                 remainingCost: sheet.getCellByA1('D34').value,
-                isOverExpense: sheet.getCellByA1('D34').value <=0
-            },{
+                isOverExpense: sheet.getCellByA1('D34').value <= 0
+            }, {
                 category: `${sheet.getCellByA1('A35').value}`,
                 currentAmount: sheet.getCellByA1('B35').value,
                 limit: sheet.getCellByA1('C35').value,
                 remainingCost: sheet.getCellByA1('D35').value,
-                isOverExpense: sheet.getCellByA1('D35').value <=0
+                isOverExpense: sheet.getCellByA1('D35').value <= 0
             }
         ]
     }
-    
 
-    async getExpenseByMonth(){
+
+    async getExpenseByMonth() {
         const sheet = this.doc.sheetsByTitle['Dashboard'];
         await sheet.loadCells('A40:D51');
         return [
@@ -280,21 +280,21 @@ export class GoogleSheetService {
         ]
     }
 
-    async getDailyExpense(){
+    async getDailyExpense() {
         const sheet = this.doc.sheetsByTitle['Dashboard'];
         await sheet.loadCells('A59:D81');
         const rowStartIndex = 59;
         const rowEndIndex = 81;
-        const columns = ['A','B','C','D'];
+        const columns = ['A', 'B', 'C', 'D'];
         const responses = [];
 
         let isStop = false;
-        for (let row=rowStartIndex; row<=rowEndIndex; row++){
-            let date,category,amount,description;
-            for(const column of columns){
+        for (let row = rowStartIndex; row <= rowEndIndex; row++) {
+            let date, category, amount, description;
+            for (const column of columns) {
                 const value = sheet.getCellByA1(`${column}${row}`).value;
-                if(!value) {
-                    isStop=true;
+                if (!value) {
+                    isStop = true;
                     break;
                 };
                 if (column === 'A') {
@@ -306,30 +306,35 @@ export class GoogleSheetService {
             }
             if (isStop) break;
             responses.push({
-                date,category, amount, description
+                date, category, amount, description
             })
         }
         return responses;
     }
 
-    async addExpenseByDaily(createExpenseDto: CreateExpenseDto){
-        const [year, month, day] = createExpenseDto.date.split('-')
-        const sheet = this.doc.sheetsByTitle['Expenses'];
+    async addExpenseByDaily(createExpenseDto: CreateExpenseDto) {
+        const sheet = this.doc.sheetsByTitle['Expenses'];        
         await sheet.loadCells('E1:E2');
-        const blankIndexCell = sheet.getCellByA1(`E2`);
-        await sheet.loadCells(`A${blankIndexCell.value-1}:D${blankIndexCell.value+1}`);
+        const blankIndexCell = sheet.getCellByA1(`E2`); 
+        await sheet.loadCells(`A${blankIndexCell.value - 1}:D${blankIndexCell.value + createExpenseDto.expenses.length}`);
         
-        const dateBlankCell = sheet.getCellByA1(`A${blankIndexCell.value}`);
-        const categoryBlankCell = sheet.getCellByA1(`B${blankIndexCell.value}`);
-        const amountBlankCell = sheet.getCellByA1(`C${blankIndexCell.value}`);
-        const descriptionBlankCell = sheet.getCellByA1(`D${blankIndexCell.value}`);
+        let blankIndexValue = blankIndexCell.value;
+        // const validData = [];
+        for (const expense of createExpenseDto.expenses) {
+            const [year, month, day] = expense.date.split('-')
+            const dateBlankCell = sheet.getCellByA1(`A${blankIndexValue}`);
+            const categoryBlankCell = sheet.getCellByA1(`B${blankIndexValue}`);
+            const amountBlankCell = sheet.getCellByA1(`C${blankIndexValue}`);
+            const descriptionBlankCell = sheet.getCellByA1(`D${blankIndexValue}`);
 
-        dateBlankCell.value = `=DATE(${year},${month},${day})`;
-        categoryBlankCell.value= createExpenseDto.category;
-        amountBlankCell.value  = createExpenseDto.amount;
-        descriptionBlankCell.value  = createExpenseDto.description;
-        blankIndexCell.value += 1;
+            dateBlankCell.value = `=DATE(${year},${month},${day})`;
+            categoryBlankCell.value = expense.category;
+            amountBlankCell.value = expense.amount;
+            descriptionBlankCell.value = expense.description;
+            blankIndexValue += 1;
+        }
         
+        blankIndexCell.value = blankIndexValue;
         await sheet.saveUpdatedCells();
         return true
     }

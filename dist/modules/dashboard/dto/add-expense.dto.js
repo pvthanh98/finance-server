@@ -10,24 +10,33 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateExpenseDto = void 0;
+const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
 class CreateExpenseDto {
 }
 __decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateExpenseDto.prototype, "category", void 0);
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => Expense),
+    __metadata("design:type", Array)
+], CreateExpenseDto.prototype, "expenses", void 0);
+exports.CreateExpenseDto = CreateExpenseDto;
+class Expense {
+}
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateExpenseDto.prototype, "date", void 0);
+], Expense.prototype, "category", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateExpenseDto.prototype, "description", void 0);
+], Expense.prototype, "date", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], Expense.prototype, "description", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", String)
-], CreateExpenseDto.prototype, "amount", void 0);
-exports.CreateExpenseDto = CreateExpenseDto;
+], Expense.prototype, "amount", void 0);
 //# sourceMappingURL=add-expense.dto.js.map

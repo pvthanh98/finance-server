@@ -13,14 +13,22 @@ const app_service_1 = require("./app.service");
 const dashboard_module_1 = require("./modules/dashboard/dashboard.module");
 const config_1 = require("@nestjs/config");
 const shared_modules_module_1 = require("./modules/shared_modules/shared_modules.module");
+const serve_static_1 = require("@nestjs/serve-static");
+const path_1 = require("path");
+const auth_module_1 = require("./modules/auth/auth.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             config_1.ConfigModule.forRoot(),
+            serve_static_1.ServeStaticModule.forRoot({
+                rootPath: (0, path_1.join)(__dirname, '..', 'public'),
+                serveRoot: "/app/",
+            }),
             dashboard_module_1.DashboardModule,
-            shared_modules_module_1.SharedModulesModule
+            shared_modules_module_1.SharedModulesModule,
+            auth_module_1.AuthModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
