@@ -9,6 +9,7 @@ import { join } from 'path';
 import { AuthModule } from './modules/auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
+require("dotenv").config()
 
 @Module({
   imports: [
@@ -19,11 +20,11 @@ import { User } from './entities/user.entity';
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'ec2-52-71-23-11.compute-1.amazonaws.com',
-      port: 5432,
-      username: 'jfxwylyhvkbpng',
-      password: '39e28d78ef50d58a8e2ad4321c9517df9ac8ff3d519b73e314ec4a02ecfcc23a',
-      database: 'd86adq6eek3nqm',
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT) || 5432,
+      username: process.env.DB_USER,
+      password: process.env.DB_PASS,
+      database: process.env.DB_NAME,
       entities: [
         User
       ],

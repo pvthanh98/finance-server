@@ -16,6 +16,9 @@ const shared_modules_module_1 = require("./modules/shared_modules/shared_modules
 const serve_static_1 = require("@nestjs/serve-static");
 const path_1 = require("path");
 const auth_module_1 = require("./modules/auth/auth.module");
+const typeorm_1 = require("@nestjs/typeorm");
+const user_entity_1 = require("./entities/user.entity");
+require("dotenv").config();
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -25,6 +28,18 @@ AppModule = __decorate([
             serve_static_1.ServeStaticModule.forRoot({
                 rootPath: (0, path_1.join)(__dirname, '..', 'public'),
                 serveRoot: "/app/",
+            }),
+            typeorm_1.TypeOrmModule.forRoot({
+                type: 'postgres',
+                host: process.env.DB_HOST,
+                port: parseInt(process.env.DB_PORT) || 5432,
+                username: process.env.DB_USER,
+                password: process.env.DB_PASS,
+                database: process.env.DB_NAME,
+                entities: [
+                    user_entity_1.User
+                ],
+                synchronize: true,
             }),
             dashboard_module_1.DashboardModule,
             shared_modules_module_1.SharedModulesModule,
