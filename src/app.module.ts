@@ -18,7 +18,7 @@ import { User } from './entities/user.entity';
       serveRoot: "/app/",
     }),
     TypeOrmModule.forRoot({
-      type: 'mysql',
+      type: 'postgres',
       host: 'ec2-52-71-23-11.compute-1.amazonaws.com',
       port: 5432,
       username: 'jfxwylyhvkbpng',
