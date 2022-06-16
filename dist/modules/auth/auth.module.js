@@ -14,6 +14,8 @@ const auth_service_1 = require("./auth.service");
 const constants_1 = require("./constants");
 const jwt_strategy_1 = require("./jwt.strategy");
 const local_strategy_1 = require("./local.strategy");
+const auth_controller_1 = require("./auth.controller");
+const user_module_1 = require("../user/user.module");
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
@@ -24,9 +26,11 @@ AuthModule = __decorate([
                 secret: constants_1.jwtConstants.secret,
                 signOptions: { expiresIn: '300s' },
             }),
+            user_module_1.UserModule
         ],
         providers: [auth_service_1.AuthService, local_strategy_1.LocalStrategy, jwt_strategy_1.JwtStrategy],
         exports: [auth_service_1.AuthService],
+        controllers: [auth_controller_1.AuthController],
     })
 ], AuthModule);
 exports.AuthModule = AuthModule;

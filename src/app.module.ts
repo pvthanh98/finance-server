@@ -9,6 +9,7 @@ import { join } from 'path';
 import { AuthModule } from './modules/auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
+import { UserModule } from './modules/user/user.module';
 require("dotenv").config()
 
 @Module({
@@ -20,11 +21,14 @@ require("dotenv").config()
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT) || 5432,
-      username: process.env.DB_USER,
-      password: process.env.DB_PASS,
-      database: process.env.DB_NAME,
+      url: process.env.DATABASE_URL,
+      // port: parseInt(process.env.DB_PORT) || 5432,
+      // username: process.env.DB_USER,
+      // password: process.env.DB_PASS,
+      // database: process.env.DB_NAME,
+      ssl: {
+        rejectUnauthorized: false
+      },
       entities: [
         User
       ],
@@ -32,7 +36,8 @@ require("dotenv").config()
     }),
     DashboardModule,
     SharedModulesModule,
-    AuthModule
+    AuthModule,
+    UserModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -18,6 +18,7 @@ const path_1 = require("path");
 const auth_module_1 = require("./modules/auth/auth.module");
 const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("./entities/user.entity");
+const user_module_1 = require("./modules/user/user.module");
 require("dotenv").config();
 let AppModule = class AppModule {
 };
@@ -31,11 +32,10 @@ AppModule = __decorate([
             }),
             typeorm_1.TypeOrmModule.forRoot({
                 type: 'postgres',
-                host: process.env.DB_HOST,
-                port: parseInt(process.env.DB_PORT) || 5432,
-                username: process.env.DB_USER,
-                password: process.env.DB_PASS,
-                database: process.env.DB_NAME,
+                url: process.env.DATABASE_URL,
+                ssl: {
+                    rejectUnauthorized: false
+                },
                 entities: [
                     user_entity_1.User
                 ],
@@ -43,7 +43,8 @@ AppModule = __decorate([
             }),
             dashboard_module_1.DashboardModule,
             shared_modules_module_1.SharedModulesModule,
-            auth_module_1.AuthModule
+            auth_module_1.AuthModule,
+            user_module_1.UserModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
