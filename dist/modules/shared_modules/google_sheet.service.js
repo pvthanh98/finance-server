@@ -337,11 +337,12 @@ let GoogleSheetService = class GoogleSheetService {
         }
         blankIndexCell.value = blankIndexValue;
         await sheet.saveUpdatedCells();
-        this.emailService.sendMail({
+        this.emailService.sendExpenseAddedMail({
             to: "pvthanh98it@gmail.com",
             title: "Hi!",
             body: "Your daily expense was added successfully.",
-            subject: "Expense Added"
+            subject: "Expense Added",
+            expenses: createExpenseDto.expenses
         });
         return true;
     }

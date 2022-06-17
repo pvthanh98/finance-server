@@ -8,4 +8,5 @@ export interface MessageType {
     body: string;
     subject: string;
     title: string;
+    expenses: Array<any>;
 }

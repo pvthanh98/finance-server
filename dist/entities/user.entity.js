@@ -40,7 +40,7 @@ __decorate([
     __metadata("design:type", Boolean)
 ], User.prototype, "isActive", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: Boolean, default: true }),
+    (0, typeorm_1.Column)({ type: Boolean, default: false }),
     __metadata("design:type", Boolean)
 ], User.prototype, "isAdmin", void 0);
 __decorate([
@@ -56,7 +56,7 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "updatedAt", void 0);
 User = __decorate([
-    (0, typeorm_1.Entity)({ name: "app_user" })
+    (0, typeorm_1.Entity)()
 ], User);
 exports.User = User;
 //# sourceMappingURL=user.entity.js.map

@@ -1,1 +1,1 @@
-export declare const emailTemplate: (title: any, body: any) => string;
+export declare const emailTemplate: (title: any, body: any, expenses: any) => string;

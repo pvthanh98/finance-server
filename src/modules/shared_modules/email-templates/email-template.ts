@@ -1,5 +1,5 @@
-function renderRow(expenses:any){
-    return expenses.map(expense=>{
+function renderRow(expenses: any) {
+    return expenses.map(expense => {
         return `
                 <tr>
                     <td>${expense.date}</td>
@@ -8,7 +8,7 @@ function renderRow(expenses:any){
                     <td>${expense.description}</td>
                 </tr>
         `
-    })
+    }).join("")
 }
 
 export const emailTemplate = (title, body, expenses) => {

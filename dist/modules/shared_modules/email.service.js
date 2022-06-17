@@ -19,13 +19,13 @@ let EmailService = class EmailService {
         this.configService = configService;
         sgMail.setApiKey(this.configService.get("SENDGIRD_API_KEY"));
     }
-    async sendMail(message) {
+    async sendExpenseAddedMail(message) {
         const msg = {
             to: message.to,
             from: 'TP Site<thanhphan.gg@gmail.com>',
             subject: message.subject,
             text: message.body,
-            html: (0, email_template_1.emailTemplate)(message.title, message.body),
+            html: (0, email_template_1.emailTemplate)(message.title, message.body, message.expenses),
         };
         sgMail
             .send(msg)
