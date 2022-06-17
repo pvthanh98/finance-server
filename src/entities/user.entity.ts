@@ -23,7 +23,7 @@ export class User {
   @Column({ type: Boolean, default: true })
   isActive: boolean;
 
-  @Column({ type: Boolean, default: true })
+  @Column({ type: Boolean, default: false })
   isAdmin: boolean;
 
   @Column({ type: String })
