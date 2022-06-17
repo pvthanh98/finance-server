@@ -14,10 +14,12 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const sheet_constant_1 = require("../../constants/sheet.constant");
 const convert_1 = require("../utils/convert");
+const email_service_1 = require("./email.service");
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 let GoogleSheetService = class GoogleSheetService {
-    constructor(configService) {
+    constructor(configService, emailService) {
         this.configService = configService;
+        this.emailService = emailService;
         this.doc = new GoogleSpreadsheet(sheet_constant_1.SHEET_CONSTANTS.DASHBOARD);
         this.doc.useServiceAccountAuth({
             client_email: this.configService.get('CLIENT_EMAIL'),
@@ -335,12 +337,19 @@ let GoogleSheetService = class GoogleSheetService {
         }
         blankIndexCell.value = blankIndexValue;
         await sheet.saveUpdatedCells();
+        this.emailService.sendMail({
+            to: "pvthanh98it@gmail.com",
+            title: "Hi!",
+            body: "Your daily expense was added successfully.",
+            subject: "Expense Added"
+        });
         return true;
     }
 };
 GoogleSheetService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [config_1.ConfigService])
+    __metadata("design:paramtypes", [config_1.ConfigService,
+        email_service_1.EmailService])
 ], GoogleSheetService);
 exports.GoogleSheetService = GoogleSheetService;
 //# sourceMappingURL=google_sheet.service.js.map

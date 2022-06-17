@@ -11,10 +11,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommonService = void 0;
 const common_1 = require("@nestjs/common");
+const email_service_1 = require("../shared_modules/email.service");
 const log_service_1 = require("../shared_modules/log.service");
 let CommonService = class CommonService {
-    constructor(logService) {
+    constructor(logService, emailService) {
         this.logService = logService;
+        this.emailService = emailService;
     }
     log(logData) {
         return this.logService.log(logData);
@@ -25,7 +27,8 @@ let CommonService = class CommonService {
 };
 CommonService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [log_service_1.LogService])
+    __metadata("design:paramtypes", [log_service_1.LogService,
+        email_service_1.EmailService])
 ], CommonService);
 exports.CommonService = CommonService;
 //# sourceMappingURL=common.service.js.map

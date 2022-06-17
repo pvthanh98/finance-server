@@ -11,6 +11,7 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const typeorm_1 = require("@nestjs/typeorm");
 const log_entity_1 = require("../../entities/log.entity");
+const email_service_1 = require("./email.service");
 const google_sheet_service_1 = require("./google_sheet.service");
 const log_service_1 = require("./log.service");
 const shared_modules_service_1 = require("./shared_modules.service");
@@ -25,11 +26,13 @@ SharedModulesModule = __decorate([
         providers: [
             shared_modules_service_1.SharedModulesService,
             google_sheet_service_1.GoogleSheetService,
-            log_service_1.LogService
+            log_service_1.LogService,
+            email_service_1.EmailService
         ],
         exports: [
             google_sheet_service_1.GoogleSheetService,
-            log_service_1.LogService
+            log_service_1.LogService,
+            email_service_1.EmailService
         ]
     })
 ], SharedModulesModule);

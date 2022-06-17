@@ -1,9 +1,11 @@
 import { ConfigService } from '@nestjs/config';
 import { CreateExpenseDto } from '../dashboard/dto/add-expense.dto';
+import { EmailService } from './email.service';
 export declare class GoogleSheetService {
     private configService;
+    private emailService;
     private doc;
-    constructor(configService: ConfigService);
+    constructor(configService: ConfigService, emailService: EmailService);
     loadOverview(): Promise<{
         usage: {
             daily: any;
