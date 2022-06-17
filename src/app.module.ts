@@ -10,6 +10,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { UserModule } from './modules/user/user.module';
+import { Log } from './entities/log.entity';
+import { CommonModule } from './modules/common/common.module';
 require("dotenv").config()
 
 @Module({
@@ -30,14 +32,16 @@ require("dotenv").config()
         rejectUnauthorized: false
       },
       entities: [
-        User
+        User,
+        Log
       ],
       synchronize: true,
     }),
     DashboardModule,
     SharedModulesModule,
     AuthModule,
-    UserModule
+    UserModule,
+    CommonModule
   ],
   controllers: [AppController],
   providers: [AppService],

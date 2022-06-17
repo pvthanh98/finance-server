@@ -19,6 +19,8 @@ const auth_module_1 = require("./modules/auth/auth.module");
 const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("./entities/user.entity");
 const user_module_1 = require("./modules/user/user.module");
+const log_entity_1 = require("./entities/log.entity");
+const common_module_1 = require("./modules/common/common.module");
 require("dotenv").config();
 let AppModule = class AppModule {
 };
@@ -37,14 +39,16 @@ AppModule = __decorate([
                     rejectUnauthorized: false
                 },
                 entities: [
-                    user_entity_1.User
+                    user_entity_1.User,
+                    log_entity_1.Log
                 ],
                 synchronize: true,
             }),
             dashboard_module_1.DashboardModule,
             shared_modules_module_1.SharedModulesModule,
             auth_module_1.AuthModule,
-            user_module_1.UserModule
+            user_module_1.UserModule,
+            common_module_1.CommonModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

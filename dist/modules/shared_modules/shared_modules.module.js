@@ -9,21 +9,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SharedModulesModule = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
+const typeorm_1 = require("@nestjs/typeorm");
+const log_entity_1 = require("../../entities/log.entity");
 const google_sheet_service_1 = require("./google_sheet.service");
+const log_service_1 = require("./log.service");
 const shared_modules_service_1 = require("./shared_modules.service");
 let SharedModulesModule = class SharedModulesModule {
 };
 SharedModulesModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            config_1.ConfigModule
+            config_1.ConfigModule,
+            typeorm_1.TypeOrmModule.forFeature([log_entity_1.Log])
         ],
         providers: [
             shared_modules_service_1.SharedModulesService,
-            google_sheet_service_1.GoogleSheetService
+            google_sheet_service_1.GoogleSheetService,
+            log_service_1.LogService
         ],
         exports: [
-            google_sheet_service_1.GoogleSheetService
+            google_sheet_service_1.GoogleSheetService,
+            log_service_1.LogService
         ]
     })
 ], SharedModulesModule);
