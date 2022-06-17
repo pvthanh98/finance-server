@@ -15,15 +15,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
-const app_service_1 = require("./app.service");
+const common_constant_1 = require("./constants/common.constant");
 const auth_service_1 = require("./modules/auth/auth.service");
+const log_service_1 = require("./modules/shared_modules/log.service");
 let AppController = class AppController {
-    constructor(appService, authService) {
-        this.appService = appService;
+    constructor(logService, authService) {
+        this.logService = logService;
         this.authService = authService;
     }
-    getHello() {
-        return this.appService.getHello();
+    getHello(req) {
+        const logData = {
+            message: req.query.message ? `${req.query.message}` : "Hello World",
+            from: req.query.from ? `${req.query.from}` : common_constant_1.LogFrom.GUEST,
+            type: req.query.type ? `${req.query.type}` : common_constant_1.LogType.PING
+        };
+        return this.logService.log(logData);
     }
     async login(req) {
         return this.authService.login(req.user);
@@ -31,9 +37,10 @@ let AppController = class AppController {
 };
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", String)
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
 ], AppController.prototype, "getHello", null);
 __decorate([
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('local')),
@@ -45,7 +52,7 @@ __decorate([
 ], AppController.prototype, "login", null);
 AppController = __decorate([
     (0, common_1.Controller)(),
-    __metadata("design:paramtypes", [app_service_1.AppService,
+    __metadata("design:paramtypes", [log_service_1.LogService,
         auth_service_1.AuthService])
 ], AppController);
 exports.AppController = AppController;
