@@ -56,7 +56,7 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "updatedAt", void 0);
 User = __decorate([
-    (0, typeorm_1.Entity)()
+    (0, typeorm_1.Entity)({ name: "app_user" })
 ], User);
 exports.User = User;
 //# sourceMappingURL=user.entity.js.map
