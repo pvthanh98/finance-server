@@ -31,6 +31,13 @@ __decorate([
     __metadata("design:type", String)
 ], Log.prototype, "type", void 0);
 __decorate([
+    (0, typeorm_1.Column)({
+        type: String,
+        default: "guest"
+    }),
+    __metadata("design:type", String)
+], Log.prototype, "from", void 0);
+__decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", String)
 ], Log.prototype, "createdAt", void 0);

@@ -16,8 +16,8 @@ let CommonService = class CommonService {
     constructor(logService) {
         this.logService = logService;
     }
-    log(message) {
-        return this.logService.log(message);
+    log(logData) {
+        return this.logService.log(logData);
     }
     async getLogs() {
         return this.logService.getLogs();

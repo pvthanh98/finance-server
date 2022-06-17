@@ -17,6 +17,12 @@ export class Log {
   })
   type: string;
 
+  @Column({
+    type: String,
+    default:"guest"
+  })
+  from: string;
+
   @CreateDateColumn()
   createdAt: string;
 

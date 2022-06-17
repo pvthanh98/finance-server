@@ -3,5 +3,10 @@ export const LOG_CONTENT = {
 }
 
 export enum LogType {
-    PING="PING"
+    PING="PING",
+    UNKNOW="UNKNOW",
+}
+
+export enum LogFrom {
+    GUEST="GUEST",
 }

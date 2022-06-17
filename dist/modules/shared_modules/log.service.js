@@ -22,11 +22,12 @@ let LogService = class LogService {
     constructor(logRepo) {
         this.logRepo = logRepo;
     }
-    async log(message = common_constant_1.LOG_CONTENT.PING) {
-        const logCount = await this.logRepo.count({ where: { type: common_constant_1.LogType.PING } });
+    async log(logData) {
+        const { message = "", from = common_constant_1.LogFrom.GUEST, type = common_constant_1.LogType.UNKNOW } = logData;
         const logContent = await this.logRepo.create({
-            message: `${message}${logCount + 1}`,
-            type: common_constant_1.LogType.PING
+            message,
+            type,
+            from
         });
         await this.logRepo.save(logContent);
         return logContent.message;
