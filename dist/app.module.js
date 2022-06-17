@@ -21,6 +21,8 @@ const user_entity_1 = require("./entities/user.entity");
 const user_module_1 = require("./modules/user/user.module");
 const log_entity_1 = require("./entities/log.entity");
 const common_module_1 = require("./modules/common/common.module");
+const schedule_1 = require("@nestjs/schedule");
+const tasks_service_1 = require("./tasks.service");
 require("dotenv").config();
 let AppModule = class AppModule {
 };
@@ -32,6 +34,7 @@ AppModule = __decorate([
                 rootPath: (0, path_1.join)(__dirname, '..', 'public'),
                 serveRoot: "/app/",
             }),
+            schedule_1.ScheduleModule.forRoot(),
             typeorm_1.TypeOrmModule.forRoot({
                 type: 'postgres',
                 url: process.env.DATABASE_URL,
@@ -51,7 +54,7 @@ AppModule = __decorate([
             common_module_1.CommonModule
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        providers: [app_service_1.AppService, tasks_service_1.TasksService],
     })
 ], AppModule);
 exports.AppModule = AppModule;

@@ -36,6 +36,7 @@ let LogService = class LogService {
             order: {
                 updatedAt: "DESC",
             },
+            take: 8
         });
         return logs;
     }

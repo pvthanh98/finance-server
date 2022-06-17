@@ -12,6 +12,8 @@ import { User } from './entities/user.entity';
 import { UserModule } from './modules/user/user.module';
 import { Log } from './entities/log.entity';
 import { CommonModule } from './modules/common/common.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TasksService } from './tasks.service';
 require("dotenv").config()
 
 @Module({
@@ -21,6 +23,7 @@ require("dotenv").config()
       rootPath: join(__dirname, '..','public'),
       serveRoot: "/app/",
     }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: process.env.DATABASE_URL,
@@ -44,6 +47,6 @@ require("dotenv").config()
     CommonModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, TasksService],
 })
 export class AppModule {}
