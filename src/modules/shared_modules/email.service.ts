@@ -9,13 +9,13 @@ export class EmailService {
     constructor(private configService: ConfigService) {
         sgMail.setApiKey(this.configService.get("SENDGIRD_API_KEY"));
     }
-    async sendMail(message: MessageType) {
+    async sendExpenseAddedMail(message: MessageType) {
         const msg = {
             to: message.to,
             from: 'TP Site<thanhphan.gg@gmail.com>',
             subject: message.subject,
             text: message.body,
-            html: emailTemplate(message.title ,message.body),
+            html: emailTemplate(message.title ,message.body, message.expenses),
         }
         sgMail
             .send(msg)
