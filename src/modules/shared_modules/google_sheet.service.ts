@@ -364,7 +364,7 @@ export class GoogleSheetService {
             const description = sheet.getCellByA1(`${sheetInfo.COLUMN_4}${i}`).value;
             totalCost += amount;
             if (!date) break;
-            data.push({ date, category: categoryValue, amount, description })
+            data.push({ date: ExcelDateToJSDate(date), category: categoryValue, amount, description })
         }
 
         return {
