@@ -361,10 +361,10 @@ let GoogleSheetService = class GoogleSheetService {
             totalCost += amount;
             if (!date)
                 break;
-            data.push({ date, category: categoryValue, amount, description });
+            data.push({ date: (0, convert_1.ExcelDateToJSDate)(date), category: categoryValue, amount, description });
         }
         return {
-            data: data,
+            data: data.reverse(),
             totalCost
         };
     }

@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DashboardController = void 0;
 const common_1 = require("@nestjs/common");
 const common_constant_1 = require("../../constants/common.constant");
+const admin_guard_1 = require("../../guards/admin.guard");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const google_sheet_service_1 = require("../shared_modules/google_sheet.service");
 const add_expense_dto_1 = require("./dto/add-expense.dto");
@@ -45,18 +46,21 @@ let DashboardController = class DashboardController {
     }
 };
 __decorate([
+    (0, common_1.UseGuards)(admin_guard_1.AdminGuard),
     (0, common_1.Get)('overview'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], DashboardController.prototype, "getOverview", null);
 __decorate([
+    (0, common_1.UseGuards)(admin_guard_1.AdminGuard),
     (0, common_1.Get)('expense-by-category'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], DashboardController.prototype, "expenseByCategory", null);
 __decorate([
+    (0, common_1.UseGuards)(admin_guard_1.AdminGuard),
     (0, common_1.Get)('expense-by-category-by/:category'),
     __param(0, (0, common_1.Param)('category')),
     __metadata("design:type", Function),
@@ -64,24 +68,28 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], DashboardController.prototype, "getCategoryByFood", null);
 __decorate([
+    (0, common_1.UseGuards)(admin_guard_1.AdminGuard),
     (0, common_1.Get)('monthly-limitation'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], DashboardController.prototype, "monthlyLimitation", null);
 __decorate([
+    (0, common_1.UseGuards)(admin_guard_1.AdminGuard),
     (0, common_1.Get)('expense-by-month'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], DashboardController.prototype, "expenseByMonth", null);
 __decorate([
+    (0, common_1.UseGuards)(admin_guard_1.AdminGuard),
     (0, common_1.Get)('expense-daily'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], DashboardController.prototype, "expenseByDaily", null);
 __decorate([
+    (0, common_1.UseGuards)(admin_guard_1.AdminGuard),
     (0, common_1.Post)('expense-daily'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),

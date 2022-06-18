@@ -25,14 +25,15 @@ let AuthService = class AuthService {
             if (bcryptjs.compareSync(`${pass}`, user.password)) {
                 return {
                     email: user.email,
-                    userId: user.id
+                    sub: user.id,
+                    isAdmin: user.isAdmin
                 };
             }
         }
         return null;
     }
     async login(user) {
-        const payload = { email: user.email, sub: user.userId };
+        const payload = { email: user.email, sub: user.sub, isAdmin: user.isAdmin };
         return {
             access_token: this.jwtService.sign(payload),
         };
