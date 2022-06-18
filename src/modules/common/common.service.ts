@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { PaginationQueryType } from 'src/types/common.type';
 import { LogInteface } from 'src/types/log.types';
 import { EmailService } from '../shared_modules/email.service';
 import { LogService } from '../shared_modules/log.service';
@@ -16,7 +17,7 @@ export class CommonService {
         return this.logService.log(logData);
     }
 
-    async getLogs () {
-        return this.logService.getLogs();
+    async getLogs (query?: PaginationQueryType) {
+        return this.logService.getLogs(query);
     }
 }

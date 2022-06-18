@@ -21,8 +21,8 @@ let CommonService = class CommonService {
     log(logData) {
         return this.logService.log(logData);
     }
-    async getLogs() {
-        return this.logService.getLogs();
+    async getLogs(query) {
+        return this.logService.getLogs(query);
     }
 };
 CommonService = __decorate([

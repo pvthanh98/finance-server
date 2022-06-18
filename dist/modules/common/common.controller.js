@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommonController = void 0;
 const common_1 = require("@nestjs/common");
 const common_constant_1 = require("../../constants/common.constant");
+const pagination_query_pipe_1 = require("../../pipes/pagination-query.pipe");
 const common_service_1 = require("./common.service");
 let CommonController = class CommonController {
     constructor(commonService) {
@@ -28,8 +29,8 @@ let CommonController = class CommonController {
         };
         return this.commonService.log(logData);
     }
-    getLog() {
-        return this.commonService.getLogs();
+    getLog(query) {
+        return this.commonService.getLogs(query);
     }
 };
 __decorate([
@@ -41,8 +42,9 @@ __decorate([
 ], CommonController.prototype, "pingServer", null);
 __decorate([
     (0, common_1.Get)('log'),
+    __param(0, (0, common_1.Query)(pagination_query_pipe_1.PaginationQueryPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], CommonController.prototype, "getLog", null);
 CommonController = __decorate([

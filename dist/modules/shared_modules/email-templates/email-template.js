@@ -11,7 +11,7 @@ function renderRow(expenses) {
                     <td>${expense.description}</td>
                 </tr>
         `;
-    });
+    }).join("");
 }
 const emailTemplate = (title, body, expenses) => {
     return `

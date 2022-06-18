@@ -1,6 +1,8 @@
-import { Controller, Get, Req } from '@nestjs/common';
+import { Controller, Get, Query, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { LogFrom, LogType } from 'src/constants/common.constant';
+import { PaginationQueryPipe } from 'src/pipes/pagination-query.pipe';
+import { PaginationQueryType } from 'src/types/common.type';
 import { LogInteface } from 'src/types/log.types';
 import { CommonService } from './common.service';
 
@@ -18,8 +20,8 @@ export class CommonController {
     }
 
     @Get('log')
-    getLog(){
-        return this.commonService.getLogs()
+    getLog(@Query(PaginationQueryPipe) query: PaginationQueryType){
+        return this.commonService.getLogs(query)
     }
 
 }

@@ -2,8 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LogFrom, LogType } from 'src/constants/common.constant';
 import { Log } from 'src/entities/log.entity';
+import { FormatPaginationType, PaginationQueryType } from 'src/types/common.type';
 import { LogInteface } from 'src/types/log.types';
 import { Repository } from 'typeorm';
+import { FormatPaginationQuery, formatPaginationResponse } from '../utils/format-pagination';
 
 @Injectable()
 export class LogService {
@@ -24,16 +26,19 @@ export class LogService {
         return logContent.message;
     }
 
-    async getLogs() {
-        const logs = await this.logRepo.find(
+    async getLogs(query: PaginationQueryType) {
+        const queryFormat = FormatPaginationQuery(query) as FormatPaginationType;
+        console.log(queryFormat)
+        const results = await this.logRepo.findAndCount(
             {
                 order: {
                     updatedAt: "DESC",
                 },
-                take: 8
+                take: queryFormat.limit,
+                skip: queryFormat.offset
             }
         );
-        return logs;
+        return formatPaginationResponse(results, queryFormat)
     }
 
 }

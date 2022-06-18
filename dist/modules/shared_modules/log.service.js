@@ -18,6 +18,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const common_constant_1 = require("../../constants/common.constant");
 const log_entity_1 = require("../../entities/log.entity");
 const typeorm_2 = require("typeorm");
+const format_pagination_1 = require("../utils/format-pagination");
 let LogService = class LogService {
     constructor(logRepo) {
         this.logRepo = logRepo;
@@ -32,14 +33,17 @@ let LogService = class LogService {
         await this.logRepo.save(logContent);
         return logContent.message;
     }
-    async getLogs() {
-        const logs = await this.logRepo.find({
+    async getLogs(query) {
+        const queryFormat = (0, format_pagination_1.FormatPaginationQuery)(query);
+        console.log(queryFormat);
+        const results = await this.logRepo.findAndCount({
             order: {
                 updatedAt: "DESC",
             },
-            take: 8
+            take: queryFormat.limit,
+            skip: queryFormat.offset
         });
-        return logs;
+        return (0, format_pagination_1.formatPaginationResponse)(results, queryFormat);
     }
 };
 LogService = __decorate([
