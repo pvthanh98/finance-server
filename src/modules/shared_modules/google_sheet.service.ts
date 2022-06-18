@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { ExpenseByCategoryIndexEnmum, FoodCategoryHttp } from 'src/constants/common.constant';
 import { SHEET_CONSTANTS } from 'src/constants/sheet.constant';
 import { CreateExpenseDto } from '../dashboard/dto/add-expense.dto';
 import { ExcelDateToJSDate } from '../utils/convert';
@@ -317,11 +318,11 @@ export class GoogleSheetService {
     }
 
     async addExpenseByDaily(createExpenseDto: CreateExpenseDto) {
-        const sheet = this.doc.sheetsByTitle['Expenses'];        
+        const sheet = this.doc.sheetsByTitle['Expenses'];
         await sheet.loadCells('E1:E2');
-        const blankIndexCell = sheet.getCellByA1(`E2`); 
+        const blankIndexCell = sheet.getCellByA1(`E2`);
         await sheet.loadCells(`A${blankIndexCell.value - 1}:D${blankIndexCell.value + createExpenseDto.expenses.length}`);
-        
+
         let blankIndexValue = blankIndexCell.value;
         // const validData = [];
         for (const expense of createExpenseDto.expenses) {
@@ -337,17 +338,39 @@ export class GoogleSheetService {
             descriptionBlankCell.value = expense.description;
             blankIndexValue += 1;
         }
-        
+
         blankIndexCell.value = blankIndexValue;
         await sheet.saveUpdatedCells();
         this.emailService.sendExpenseAddedMail({
-            to:"pvthanh98it@gmail.com",
-            title:"Hi!",
-            body:"Your daily expense was added successfully.",
+            to: "pvthanh98it@gmail.com",
+            title: "Hi!",
+            body: "Your daily expense was added successfully.",
             subject: "Expense Added",
             expenses: createExpenseDto.expenses
         })
         return true
+    }
+
+    async getCategoryByFood(category: FoodCategoryHttp) {
+        const sheet = this.doc.sheetsByTitle['Expense By Category'];
+        const data = [];
+        let totalCost = 0;
+        const sheetInfo = ExpenseByCategoryIndexEnmum(category);
+        await sheet.loadCells(sheetInfo.LOAD_CELL);
+        for (let i = sheetInfo.START_ROW_INDEX; i <= sheetInfo.END_ROW_INDEX; i++) {
+            const date = sheet.getCellByA1(`${sheetInfo.COLUMN_1}${i}`).value;
+            const categoryValue = sheet.getCellByA1(`${sheetInfo.COLUMN_2}${i}`).value;
+            const amount = sheet.getCellByA1(`${sheetInfo.COLUMN_3}${i}`).value;
+            const description = sheet.getCellByA1(`${sheetInfo.COLUMN_4}${i}`).value;
+            totalCost += amount;
+            if (!date) break;
+            data.push({ date, category: categoryValue, amount, description })
+        }
+
+        return {
+            data: data,
+            totalCost
+        };
     }
 
 }

@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { FoodCategoryHttp } from 'src/constants/common.constant';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { GoogleSheetService } from '../shared_modules/google_sheet.service';
 import { CreateExpenseDto } from './dto/add-expense.dto';
@@ -17,6 +18,11 @@ export class DashboardController {
     @Get('expense-by-category')
     expenseByCategory(){
         return this.googleSheetService.expenseByCategory();
+    }
+
+    @Get('expense-by-category-by/:category')
+    getCategoryByFood(@Param('category') category: FoodCategoryHttp){
+        return this.googleSheetService.getCategoryByFood(category);
     }
 
     @Get('monthly-limitation')

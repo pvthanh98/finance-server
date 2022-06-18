@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GoogleSheetService = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
+const common_constant_1 = require("../../constants/common.constant");
 const sheet_constant_1 = require("../../constants/sheet.constant");
 const convert_1 = require("../utils/convert");
 const email_service_1 = require("./email.service");
@@ -345,6 +346,27 @@ let GoogleSheetService = class GoogleSheetService {
             expenses: createExpenseDto.expenses
         });
         return true;
+    }
+    async getCategoryByFood(category) {
+        const sheet = this.doc.sheetsByTitle['Expense By Category'];
+        const data = [];
+        let totalCost = 0;
+        const sheetInfo = (0, common_constant_1.ExpenseByCategoryIndexEnmum)(category);
+        await sheet.loadCells(sheetInfo.LOAD_CELL);
+        for (let i = sheetInfo.START_ROW_INDEX; i <= sheetInfo.END_ROW_INDEX; i++) {
+            const date = sheet.getCellByA1(`${sheetInfo.COLUMN_1}${i}`).value;
+            const categoryValue = sheet.getCellByA1(`${sheetInfo.COLUMN_2}${i}`).value;
+            const amount = sheet.getCellByA1(`${sheetInfo.COLUMN_3}${i}`).value;
+            const description = sheet.getCellByA1(`${sheetInfo.COLUMN_4}${i}`).value;
+            totalCost += amount;
+            if (!date)
+                break;
+            data.push({ date, category: categoryValue, amount, description });
+        }
+        return {
+            data: data,
+            totalCost
+        };
     }
 };
 GoogleSheetService = __decorate([

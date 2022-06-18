@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DashboardController = void 0;
 const common_1 = require("@nestjs/common");
+const common_constant_1 = require("../../constants/common.constant");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const google_sheet_service_1 = require("../shared_modules/google_sheet.service");
 const add_expense_dto_1 = require("./dto/add-expense.dto");
@@ -26,6 +27,9 @@ let DashboardController = class DashboardController {
     }
     expenseByCategory() {
         return this.googleSheetService.expenseByCategory();
+    }
+    getCategoryByFood(category) {
+        return this.googleSheetService.getCategoryByFood(category);
     }
     monthlyLimitation() {
         return this.googleSheetService.getMonthlyLimitation();
@@ -52,6 +56,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], DashboardController.prototype, "expenseByCategory", null);
+__decorate([
+    (0, common_1.Get)('expense-by-category-by/:category'),
+    __param(0, (0, common_1.Param)('category')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], DashboardController.prototype, "getCategoryByFood", null);
 __decorate([
     (0, common_1.Get)('monthly-limitation'),
     __metadata("design:type", Function),

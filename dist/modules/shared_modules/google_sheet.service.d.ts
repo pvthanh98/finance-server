@@ -1,4 +1,5 @@
 import { ConfigService } from '@nestjs/config';
+import { FoodCategoryHttp } from 'src/constants/common.constant';
 import { CreateExpenseDto } from '../dashboard/dto/add-expense.dto';
 import { EmailService } from './email.service';
 export declare class GoogleSheetService {
@@ -48,4 +49,8 @@ export declare class GoogleSheetService {
     }[]>;
     getDailyExpense(): Promise<any[]>;
     addExpenseByDaily(createExpenseDto: CreateExpenseDto): Promise<boolean>;
+    getCategoryByFood(category: FoodCategoryHttp): Promise<{
+        data: any[];
+        totalCost: number;
+    }>;
 }

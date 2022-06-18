@@ -1,3 +1,4 @@
+import { FoodCategoryHttp } from 'src/constants/common.constant';
 import { GoogleSheetService } from '../shared_modules/google_sheet.service';
 import { CreateExpenseDto } from './dto/add-expense.dto';
 export declare class DashboardController {
@@ -31,6 +32,10 @@ export declare class DashboardController {
             category: any;
             amount: any;
         }[];
+    }>;
+    getCategoryByFood(category: FoodCategoryHttp): Promise<{
+        data: any[];
+        totalCost: number;
     }>;
     monthlyLimitation(): Promise<{
         category: any;
