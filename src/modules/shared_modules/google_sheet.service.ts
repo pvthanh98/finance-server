@@ -368,7 +368,7 @@ export class GoogleSheetService {
         }
 
         return {
-            data: data,
+            data: data.reverse(),
             totalCost
         };
     }
