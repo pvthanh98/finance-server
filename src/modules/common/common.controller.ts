@@ -7,7 +7,7 @@ import { PaginationQueryType } from 'src/types/common.type';
 import { LogInteface } from 'src/types/log.types';
 import { CommonService } from './common.service';
 import { diskStorage } from 'multer';
-import { join } from 'path';
+import path, { join } from 'path';
 
 @Controller('common')
 export class CommonController {
@@ -27,22 +27,21 @@ export class CommonController {
     return this.commonService.getLogs(query)
   }
 
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: "../../../public/upload/"
-    })
-  }))
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
-    return {
-      path: `/static/upload/${file.filename}`
-    }
-  }
+  // @Post('upload')
+  // @UseInterceptors(FileInterceptor('file', {
+  //   storage: diskStorage({
+  //     destination: join(__dirname,"../../../", "public/upload/")
+  //   })
+  // }))
+  // uploadFile(@UploadedFile() file: Express.Multer.File) {
+  //   return {
+  //     path: `/static/upload/${file.filename}`
+  //   }
+  // }
 
   @Get('execute')
   execute() {
-
-    return "../../../public/upload/";
+    return join(__dirname,"../../../", "public/upload/")
   }
 
 

@@ -14,11 +14,10 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommonController = void 0;
 const common_1 = require("@nestjs/common");
-const platform_express_1 = require("@nestjs/platform-express");
 const common_constant_1 = require("../../constants/common.constant");
 const pagination_query_pipe_1 = require("../../pipes/pagination-query.pipe");
 const common_service_1 = require("./common.service");
-const multer_1 = require("multer");
+const path_1 = require("path");
 let CommonController = class CommonController {
     constructor(commonService) {
         this.commonService = commonService;
@@ -34,13 +33,8 @@ let CommonController = class CommonController {
     getLog(query) {
         return this.commonService.getLogs(query);
     }
-    uploadFile(file) {
-        return {
-            path: `/static/upload/${file.filename}`
-        };
-    }
     execute() {
-        return "../../../public/upload/";
+        return (0, path_1.join)(__dirname, "../../../", "public/upload/");
     }
 };
 __decorate([
@@ -57,18 +51,6 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], CommonController.prototype, "getLog", null);
-__decorate([
-    (0, common_1.Post)('upload'),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {
-        storage: (0, multer_1.diskStorage)({
-            destination: "../../../public/upload/"
-        })
-    })),
-    __param(0, (0, common_1.UploadedFile)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], CommonController.prototype, "uploadFile", null);
 __decorate([
     (0, common_1.Get)('execute'),
     __metadata("design:type", Function),
