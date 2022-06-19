@@ -11,5 +11,5 @@ export declare class CommonController {
         totalPage: number;
         result: any[];
     }>;
-    execute(): Promise<string>;
+    execute(): Promise<import("../../entities/friend.entity").Friend[]>;
 }

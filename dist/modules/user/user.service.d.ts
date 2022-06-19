@@ -42,5 +42,5 @@ export declare class UserService {
         totalPage: number;
         result: any[];
     }>;
-    execute(): Promise<string>;
+    execute(): Promise<Friend[]>;
 }

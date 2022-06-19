@@ -84,6 +84,8 @@ let UserService = class UserService {
         return (0, format_pagination_1.formatPaginationResponse)(resulst, formatQuery);
     }
     async addFriend(friendDto, userReq) {
+        if (friendDto.friendId.toString() === userReq.sub.toString())
+            throw new common_1.BadRequestException("Cannot add friend your self");
         const user = await this.usersRepository.findOne({
             where: { id: userReq.sub }
         });
@@ -157,6 +159,7 @@ let UserService = class UserService {
             "user.id",
             "user.firstName",
             "user.lastName",
+            "user.image",
         ])
             .where("friend.friendId = :friendId", { friendId: sub })
             .andWhere("friend.status = :status", { status: friend_constant_1.FriendStatus.SEND_REQUEST })
@@ -216,14 +219,7 @@ let UserService = class UserService {
         return (0, format_pagination_1.formatPaginationResponse)(values, queryFormat);
     }
     async execute() {
-        const user = await this.usersRepository.findOne({
-            where: {
-                id: "a02b7954-8a89-4b5e-9cb9-e7bac65fa1f7"
-            }
-        });
-        user.image = "https://scontent.fsgn5-8.fna.fbcdn.net/v/t1.6435-9/143481419_420758502468395_981169606916709299_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=174925&_nc_ohc=QC5MgchnbycAX98ygJL&_nc_ht=scontent.fsgn5-8.fna&oh=00_AT_Y1AOqxr8mtFKTrx9s61fFLiCLE8KHWb3PHa26PLujJQ&oe=62D61441";
-        await this.usersRepository.save(user);
-        return "ok";
+        return this.friendRepository.find();
     }
 };
 UserService = __decorate([

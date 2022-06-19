@@ -15,5 +15,5 @@ export declare class CommonService {
         totalPage: number;
         result: any[];
     }>;
-    execute(): Promise<string>;
+    execute(): Promise<import("../../entities/friend.entity").Friend[]>;
 }
