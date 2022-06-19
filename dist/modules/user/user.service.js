@@ -90,14 +90,22 @@ let UserService = class UserService {
         const friend = await this.usersRepository.findOne({
             where: { id: friendDto.friendId }
         });
-        const friendShip = this.friendRepository.create({
-            friend,
-            user
-        });
-        await this.friendRepository.save(friendShip);
-        return {
-            status: true
-        };
+        const isFriendShipExist = await this.friendRepository.createQueryBuilder("friend")
+            .select()
+            .where("friend.userId = :userId", { userId: userReq.sub })
+            .andWhere("friend.friendId = :friendId", { friendId: friendDto.friendId })
+            .getOne();
+        if (!isFriendShipExist) {
+            const friendShip = this.friendRepository.create({
+                friend,
+                user
+            });
+            await this.friendRepository.save(friendShip);
+            return {
+                status: true
+            };
+        }
+        throw new common_1.BadRequestException("Two you have already be friends");
     }
     async handleFriendRequest(handleFriendDto, userReq) {
         const { friendShipId, action } = handleFriendDto;
