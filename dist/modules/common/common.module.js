@@ -11,11 +11,15 @@ const common_1 = require("@nestjs/common");
 const common_service_1 = require("./common.service");
 const common_controller_1 = require("./common.controller");
 const shared_modules_module_1 = require("../shared_modules/shared_modules.module");
+const user_module_1 = require("../user/user.module");
 let CommonModule = class CommonModule {
 };
 CommonModule = __decorate([
     (0, common_1.Module)({
-        imports: [shared_modules_module_1.SharedModulesModule],
+        imports: [
+            shared_modules_module_1.SharedModulesModule,
+            user_module_1.UserModule
+        ],
         providers: [common_service_1.CommonService],
         controllers: [common_controller_1.CommonController]
     })

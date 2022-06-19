@@ -22,16 +22,12 @@ require("dotenv").config()
     ConfigModule.forRoot(),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..','public'),
-      serveRoot: "/app/",
+      serveRoot: "/static/",
     }),
     ScheduleModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: process.env.DATABASE_URL,
-      // port: parseInt(process.env.DB_PORT) || 5432,
-      // username: process.env.DB_USER,
-      // password: process.env.DB_PASS,
-      // database: process.env.DB_NAME,
       ssl: {
         rejectUnauthorized: false
       },

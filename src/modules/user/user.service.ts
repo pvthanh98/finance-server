@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { FormatPaginationQuery, formatPaginationResponse } from '../utils/format-pagination';
 import { UnAndAddFriendDto } from './dto/add-friend.dto';
 import { HandleFriendRequestDto } from './dto/handle-friend.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 import { CreateUserDto } from './dto/user.register';
 import { UserRegisterResponse } from './type/user-register.response';
 const bcrypt = require('bcryptjs');
@@ -29,6 +30,19 @@ export class UserService {
             }
         });
         return userProifle;
+    }
+ 
+    async updateProfile(updateProfileDto: UpdateProfileDto, userId: string){
+        await this.usersRepository.update({id: userId},{
+                ...updateProfileDto
+        });
+
+        const user = await this.usersRepository.findOne({
+            where:{
+                id: userId
+            }
+        });
+        return user;
     }
 
     async registerUser(userDto: CreateUserDto): Promise<UserRegisterResponse> {
@@ -221,5 +235,18 @@ export class UserService {
 
         return formatPaginationResponse(values, queryFormat);
     }
+
+    async execute(){
+        /** testing only */
+        const user = await this.usersRepository.findOne({
+            where:{
+                id:"8cd85043-423a-4987-b98a-e023b4ae36f3"
+            }
+        });
+        user.image = "https://scontent.fsgn5-9.fna.fbcdn.net/v/t39.30808-6/280141999_1666459857024930_4547795600855370134_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=l8QzIPeT3zwAX85m-qd&_nc_ht=scontent.fsgn5-9.fna&oh=00_AT-ZcQ_f_ovfy6DNsU5yjt0chHOl8csrYoaQ5tggurnXJQ&oe=62B380C6"
+        await this.usersRepository.save(user);
+        return "ok"
+    }
+    
 
 }

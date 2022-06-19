@@ -18,6 +18,7 @@ const pagination_query_pipe_1 = require("../../pipes/pagination-query.pipe");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const add_friend_dto_1 = require("./dto/add-friend.dto");
 const handle_friend_dto_1 = require("./dto/handle-friend.dto");
+const update_profile_dto_1 = require("./dto/update-profile.dto");
 const user_service_1 = require("./user.service");
 let UserController = class UserController {
     constructor(userService) {
@@ -28,6 +29,9 @@ let UserController = class UserController {
     }
     getProfile(req) {
         return this.userService.getProfile(req.user.sub);
+    }
+    updateProfile(updateProfileDto, req) {
+        return this.userService.updateProfile(updateProfileDto, req.user.sub);
     }
     addFriend(friendDto, req) {
         return this.userService.addFriend(friendDto, req.user);
@@ -58,6 +62,14 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "getProfile", null);
+__decorate([
+    (0, common_1.Put)('profile'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [update_profile_dto_1.UpdateProfileDto, Object]),
+    __metadata("design:returntype", void 0)
+], UserController.prototype, "updateProfile", null);
 __decorate([
     (0, common_1.Post)('friend'),
     __param(0, (0, common_1.Body)()),

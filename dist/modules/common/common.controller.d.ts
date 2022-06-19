@@ -1,3 +1,4 @@
+/// <reference types="multer" />
 import { Request } from 'express';
 import { PaginationQueryType } from 'src/types/common.type';
 import { CommonService } from './common.service';
@@ -11,4 +12,8 @@ export declare class CommonController {
         totalPage: number;
         result: any[];
     }>;
+    uploadFile(file: Express.Multer.File): {
+        path: string;
+    };
+    execute(): string;
 }

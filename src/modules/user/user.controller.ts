@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { PaginationQueryPipe } from 'src/pipes/pagination-query.pipe';
 import { PaginationQueryType } from 'src/types/common.type';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UnAndAddFriendDto } from './dto/add-friend.dto';
 import { HandleFriendRequestDto } from './dto/handle-friend.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UserService } from './user.service';
 
 @UseGuards(JwtAuthGuard)
@@ -21,6 +22,11 @@ export class UserController {
     @Get('profile')
     getProfile(@Req() req){
         return this.userService.getProfile(req.user.sub);
+    }
+
+    @Put('profile')
+    updateProfile(@Body() updateProfileDto: UpdateProfileDto ,@Req() req){
+        return this.userService.updateProfile(updateProfileDto, req.user.sub);
     }
 
     @Post('friend')

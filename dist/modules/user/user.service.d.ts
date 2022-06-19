@@ -4,6 +4,7 @@ import { PaginationQueryType } from 'src/types/common.type';
 import { Repository } from 'typeorm';
 import { UnAndAddFriendDto } from './dto/add-friend.dto';
 import { HandleFriendRequestDto } from './dto/handle-friend.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 import { CreateUserDto } from './dto/user.register';
 import { UserRegisterResponse } from './type/user-register.response';
 export declare class UserService {
@@ -11,6 +12,7 @@ export declare class UserService {
     private friendRepository;
     constructor(usersRepository: Repository<User>, friendRepository: Repository<Friend>);
     getProfile(userId: string): Promise<User>;
+    updateProfile(updateProfileDto: UpdateProfileDto, userId: string): Promise<User>;
     registerUser(userDto: CreateUserDto): Promise<UserRegisterResponse>;
     findByEmail(email: string): Promise<User>;
     findAll(): Promise<User[]>;
@@ -35,4 +37,5 @@ export declare class UserService {
         totalPage: number;
         result: any[];
     }>;
+    execute(): Promise<string>;
 }

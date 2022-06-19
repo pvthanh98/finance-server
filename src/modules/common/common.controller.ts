@@ -1,10 +1,13 @@
-import { Controller, Get, Query, Req } from '@nestjs/common';
+import { Controller, Get, Post, Query, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { LogFrom, LogType } from 'src/constants/common.constant';
 import { PaginationQueryPipe } from 'src/pipes/pagination-query.pipe';
 import { PaginationQueryType } from 'src/types/common.type';
 import { LogInteface } from 'src/types/log.types';
 import { CommonService } from './common.service';
+import { diskStorage } from 'multer';
+import {join} from 'path';
 
 @Controller('common')
 export class CommonController {
@@ -23,5 +26,29 @@ export class CommonController {
     getLog(@Query(PaginationQueryPipe) query: PaginationQueryType){
         return this.commonService.getLogs(query)
     }
+
+    @Post('upload')
+    @UseInterceptors(FileInterceptor('file', {
+      storage: diskStorage({
+        destination: join(__dirname,"../../../", "public/upload/")
+      })
+    }))
+    uploadFile(@UploadedFile() file: Express.Multer.File){
+      return {
+        path: `/static/upload/${file.filename}`
+      }
+    }
+
+    @Get('execute')
+    execute(){
+        /** Testing only */
+        // return this.commonService.execute()
+        console.log({
+          path: join(__dirname,"../../../", "public/upload/")
+        })
+        return "ok"
+    }
+
+    
 
 }

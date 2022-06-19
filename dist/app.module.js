@@ -33,7 +33,7 @@ AppModule = __decorate([
             config_1.ConfigModule.forRoot(),
             serve_static_1.ServeStaticModule.forRoot({
                 rootPath: (0, path_1.join)(__dirname, '..', 'public'),
-                serveRoot: "/app/",
+                serveRoot: "/static/",
             }),
             schedule_1.ScheduleModule.forRoot(),
             typeorm_1.TypeOrmModule.forRoot({

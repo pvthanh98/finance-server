@@ -34,6 +34,15 @@ let UserService = class UserService {
         });
         return userProifle;
     }
+    async updateProfile(updateProfileDto, userId) {
+        await this.usersRepository.update({ id: userId }, Object.assign({}, updateProfileDto));
+        const user = await this.usersRepository.findOne({
+            where: {
+                id: userId
+            }
+        });
+        return user;
+    }
     async registerUser(userDto) {
         const salt = bcrypt.genSaltSync(9);
         const password = bcrypt.hashSync(`${userDto.password}`, salt);
@@ -197,6 +206,16 @@ let UserService = class UserService {
             .orderBy("friend.createdAt", "DESC")
             .getManyAndCount();
         return (0, format_pagination_1.formatPaginationResponse)(values, queryFormat);
+    }
+    async execute() {
+        const user = await this.usersRepository.findOne({
+            where: {
+                id: "8cd85043-423a-4987-b98a-e023b4ae36f3"
+            }
+        });
+        user.image = "https://scontent.fsgn5-9.fna.fbcdn.net/v/t39.30808-6/280141999_1666459857024930_4547795600855370134_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=l8QzIPeT3zwAX85m-qd&_nc_ht=scontent.fsgn5-9.fna&oh=00_AT-ZcQ_f_ovfy6DNsU5yjt0chHOl8csrYoaQ5tggurnXJQ&oe=62B380C6";
+        await this.usersRepository.save(user);
+        return "ok";
     }
 };
 UserService = __decorate([
