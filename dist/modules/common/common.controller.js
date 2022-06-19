@@ -19,7 +19,6 @@ const common_constant_1 = require("../../constants/common.constant");
 const pagination_query_pipe_1 = require("../../pipes/pagination-query.pipe");
 const common_service_1 = require("./common.service");
 const multer_1 = require("multer");
-const path_1 = require("path");
 let CommonController = class CommonController {
     constructor(commonService) {
         this.commonService = commonService;
@@ -41,10 +40,7 @@ let CommonController = class CommonController {
         };
     }
     execute() {
-        console.log({
-            path: (0, path_1.join)(__dirname, "../../../", "public/upload/")
-        });
-        return "ok";
+        return "../../../public/upload/";
     }
 };
 __decorate([
@@ -65,7 +61,7 @@ __decorate([
     (0, common_1.Post)('upload'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {
         storage: (0, multer_1.diskStorage)({
-            destination: (0, path_1.join)(__dirname, "../../../", "public/upload/")
+            destination: "../../../public/upload/"
         })
     })),
     __param(0, (0, common_1.UploadedFile)()),

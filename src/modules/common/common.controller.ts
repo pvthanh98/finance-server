@@ -7,48 +7,44 @@ import { PaginationQueryType } from 'src/types/common.type';
 import { LogInteface } from 'src/types/log.types';
 import { CommonService } from './common.service';
 import { diskStorage } from 'multer';
-import {join} from 'path';
+import { join } from 'path';
 
 @Controller('common')
 export class CommonController {
-    constructor(private commonService: CommonService){}
-    @Get('ping')
-    pingServer(@Req() req: Request){
-      const logData: LogInteface = {
-        message : req.query.message ? `${req.query.message}` : "Ping",
-        from: req.query.from ? `${req.query.from}` : LogFrom.GUEST,
-        type: req.query.type ? `${req.query.type}` : LogType.PING
-      }
-        return this.commonService.log(logData)
+  constructor(private commonService: CommonService) { }
+  @Get('ping')
+  pingServer(@Req() req: Request) {
+    const logData: LogInteface = {
+      message: req.query.message ? `${req.query.message}` : "Ping",
+      from: req.query.from ? `${req.query.from}` : LogFrom.GUEST,
+      type: req.query.type ? `${req.query.type}` : LogType.PING
     }
+    return this.commonService.log(logData)
+  }
 
-    @Get('log')
-    getLog(@Query(PaginationQueryPipe) query: PaginationQueryType){
-        return this.commonService.getLogs(query)
+  @Get('log')
+  getLog(@Query(PaginationQueryPipe) query: PaginationQueryType) {
+    return this.commonService.getLogs(query)
+  }
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: "../../../public/upload/"
+    })
+  }))
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
+    return {
+      path: `/static/upload/${file.filename}`
     }
+  }
 
-    @Post('upload')
-    @UseInterceptors(FileInterceptor('file', {
-      storage: diskStorage({
-        destination: join(__dirname,"../../../", "public/upload/")
-      })
-    }))
-    uploadFile(@UploadedFile() file: Express.Multer.File){
-      return {
-        path: `/static/upload/${file.filename}`
-      }
-    }
+  @Get('execute')
+  execute() {
 
-    @Get('execute')
-    execute(){
-        /** Testing only */
-        // return this.commonService.execute()
-        console.log({
-          path: join(__dirname,"../../../", "public/upload/")
-        })
-        return "ok"
-    }
+    return "../../../public/upload/";
+  }
 
-    
+
 
 }
