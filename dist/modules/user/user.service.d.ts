@@ -15,7 +15,12 @@ export declare class UserService {
     updateProfile(updateProfileDto: UpdateProfileDto, userId: string): Promise<User>;
     registerUser(userDto: CreateUserDto): Promise<UserRegisterResponse>;
     findByEmail(email: string): Promise<User>;
-    findAll(): Promise<User[]>;
+    findAll(query: PaginationQueryType): Promise<{
+        currentPage: number;
+        recordPerPage: number;
+        totalPage: number;
+        result: any[];
+    }>;
     addFriend(friendDto: UnAndAddFriendDto, userReq: any): Promise<{
         status: boolean;
     }>;

@@ -75,21 +75,23 @@ export class UserService {
         return user;
     }
 
-    async findAll() {
-        const users = await this.usersRepository.find({
-            select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-                email: true,
-                createdAt: true
-            },
-            take: 8,
-            order: {
-                createdAt: "DESC"
-            },
-        });
-        return users;
+    async findAll(query: PaginationQueryType) {
+        const { search } = query;
+        const formatQuery = FormatPaginationQuery(query);
+
+        let users = this.usersRepository.createQueryBuilder("user")
+            .select(["user.id", "user.firstName","user.lastName","user.email","user.image", "user.createdAt"])
+            .skip()
+            .limit()
+        
+        if (search) {
+            users
+                .where("LOWER(user.firstName) = LOWER(:search)", {search})
+                .orWhere("LOWER(user.lastName) = LOWER(:search)", {search})
+        }
+
+        let resulst = await users.getManyAndCount();
+        return formatPaginationResponse(resulst, formatQuery);
     }
 
     async addFriend(friendDto: UnAndAddFriendDto, userReq: any) {
@@ -225,6 +227,7 @@ export class UserService {
                 "user.id",
                 "user.firstName",
                 "user.lastName",
+                "user.image"
             ])
             .where("friend.userId = :userId", { userId: sub })
             .andWhere("friend.status = :status", { status: FriendStatus.FRIEND })
@@ -240,10 +243,10 @@ export class UserService {
         /** testing only */
         const user = await this.usersRepository.findOne({
             where:{
-                id:"8cd85043-423a-4987-b98a-e023b4ae36f3"
+                id:"a02b7954-8a89-4b5e-9cb9-e7bac65fa1f7"
             }
         });
-        user.image = "https://scontent.fsgn5-9.fna.fbcdn.net/v/t39.30808-6/280141999_1666459857024930_4547795600855370134_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=l8QzIPeT3zwAX85m-qd&_nc_ht=scontent.fsgn5-9.fna&oh=00_AT-ZcQ_f_ovfy6DNsU5yjt0chHOl8csrYoaQ5tggurnXJQ&oe=62B380C6"
+        user.image = "https://scontent.fsgn5-8.fna.fbcdn.net/v/t1.6435-9/143481419_420758502468395_981169606916709299_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=174925&_nc_ohc=QC5MgchnbycAX98ygJL&_nc_ht=scontent.fsgn5-8.fna&oh=00_AT_Y1AOqxr8mtFKTrx9s61fFLiCLE8KHWb3PHa26PLujJQ&oe=62D61441"
         await this.usersRepository.save(user);
         return "ok"
     }

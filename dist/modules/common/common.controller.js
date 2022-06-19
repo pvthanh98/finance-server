@@ -17,7 +17,6 @@ const common_1 = require("@nestjs/common");
 const common_constant_1 = require("../../constants/common.constant");
 const pagination_query_pipe_1 = require("../../pipes/pagination-query.pipe");
 const common_service_1 = require("./common.service");
-const path_1 = require("path");
 let CommonController = class CommonController {
     constructor(commonService) {
         this.commonService = commonService;
@@ -34,7 +33,7 @@ let CommonController = class CommonController {
         return this.commonService.getLogs(query);
     }
     execute() {
-        return (0, path_1.join)(__dirname, "../../../", "public/upload/");
+        return this.commonService.execute();
     }
 };
 __decorate([

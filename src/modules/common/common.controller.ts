@@ -41,7 +41,7 @@ export class CommonController {
 
   @Get('execute')
   execute() {
-    return join(__dirname,"../../../", "public/upload/")
+    return this.commonService.execute()
   }
 
 

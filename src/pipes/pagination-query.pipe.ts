@@ -7,14 +7,15 @@ export class PaginationQueryPipe implements PipeTransform {
   transform(value: PaginationQueryType, metadata: ArgumentMetadata) {
     let limit = PaginationConstant.DEFAULT_LIMIT;
     let page = PaginationConstant.DEFAULT_PAGE;
-    if(value.page && !isNaN(value.page)){
-      page=Number(value.page);
+    if (value.page && !isNaN(value.page)) {
+      page = Number(value.page);
     }
-    if(value.limit && !isNaN(value.limit)){
-      limit=Number(value.limit);
+    if (value.limit && !isNaN(value.limit)) {
+      limit = Number(value.limit);
     }
     return {
-      page,limit
+      ...value,
+      page, limit
     }
   }
 }

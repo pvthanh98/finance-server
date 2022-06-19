@@ -11,5 +11,5 @@ export declare class CommonController {
         totalPage: number;
         result: any[];
     }>;
-    execute(): string;
+    execute(): Promise<string>;
 }

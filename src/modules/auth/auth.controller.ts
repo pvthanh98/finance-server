@@ -9,9 +9,4 @@ export class AuthController {
     userRegister(@Body() createUserDto: CreateUserDto){
         return this.userService.registerUser(createUserDto);
     }
-
-    @Get('user/guest')
-    findAllUser(){
-        return this.userService.findAll();
-    }
 }

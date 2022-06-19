@@ -23,9 +23,6 @@ let AuthController = class AuthController {
     userRegister(createUserDto) {
         return this.userService.registerUser(createUserDto);
     }
-    findAllUser() {
-        return this.userService.findAll();
-    }
 };
 __decorate([
     (0, common_1.Post)('user/register'),
@@ -34,12 +31,6 @@ __decorate([
     __metadata("design:paramtypes", [user_register_1.CreateUserDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "userRegister", null);
-__decorate([
-    (0, common_1.Get)('user/guest'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], AuthController.prototype, "findAllUser", null);
 AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [user_service_1.UserService])

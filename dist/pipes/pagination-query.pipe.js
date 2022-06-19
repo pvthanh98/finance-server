@@ -19,9 +19,7 @@ let PaginationQueryPipe = class PaginationQueryPipe {
         if (value.limit && !isNaN(value.limit)) {
             limit = Number(value.limit);
         }
-        return {
-            page, limit
-        };
+        return Object.assign(Object.assign({}, value), { page, limit });
     }
 };
 PaginationQueryPipe = __decorate([

@@ -5,5 +5,6 @@ export declare class PaginationQueryPipe implements PipeTransform {
     transform(value: PaginationQueryType, metadata: ArgumentMetadata): {
         page: PaginationConstant;
         limit: PaginationConstant;
+        search?: string;
     };
 }

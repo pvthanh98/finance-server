@@ -15,8 +15,8 @@ export class UserController {
     ){}
     
     @Get()
-    getUsers(){
-        return this.userService.findAll();
+    getUsers(@Query(PaginationQueryPipe) query: PaginationQueryType){
+        return this.userService.findAll(query);
     }
 
     @Get('profile')
