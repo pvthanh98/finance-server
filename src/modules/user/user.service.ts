@@ -50,6 +50,12 @@ export class UserService {
         const user = await this.usersRepository.findOne({
             where: {
                 email: email
+            },
+            select:{
+                password:true,
+                id:true,
+                isAdmin:true,
+                email:true
             }
         });
         return user;
