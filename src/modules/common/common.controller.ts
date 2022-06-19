@@ -27,17 +27,17 @@ export class CommonController {
     return this.commonService.getLogs(query)
   }
 
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: "../../../public/upload/"
-    })
-  }))
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
-    return {
-      path: `/static/upload/${file.filename}`
-    }
-  }
+  // @Post('upload')
+  // @UseInterceptors(FileInterceptor('file', {
+  //   storage: diskStorage({
+  //     destination: "../../../public/upload/"
+  //   })
+  // }))
+  // uploadFile(@UploadedFile() file: Express.Multer.File) {
+  //   return {
+  //     path: `/static/upload/${file.filename}`
+  //   }
+  // }
 
   @Get('execute')
   execute() {
