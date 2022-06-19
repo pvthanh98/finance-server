@@ -1,0 +1,31 @@
+import { PaginationQueryType } from 'src/types/common.type';
+import { UnAndAddFriendDto } from './dto/add-friend.dto';
+import { HandleFriendRequestDto } from './dto/handle-friend.dto';
+import { UserService } from './user.service';
+export declare class UserController {
+    private userService;
+    constructor(userService: UserService);
+    getUsers(): Promise<import("../../entities/user.entity").User[]>;
+    getProfile(req: any): Promise<import("../../entities/user.entity").User>;
+    addFriend(friendDto: UnAndAddFriendDto, req: any): Promise<{
+        status: boolean;
+    }>;
+    listFriend(query: PaginationQueryType, req: any): Promise<{
+        currentPage: number;
+        recordPerPage: number;
+        totalPage: number;
+        result: any[];
+    }>;
+    unFriend(friendDto: UnAndAddFriendDto, req: any): Promise<{
+        status: boolean;
+    }>;
+    handleFriendRequest(friendRequestDto: HandleFriendRequestDto, req: any): Promise<{
+        status: boolean;
+    }>;
+    listFriendRequest(query: PaginationQueryType, req: any): Promise<{
+        currentPage: number;
+        recordPerPage: number;
+        totalPage: number;
+        result: any[];
+    }>;
+}

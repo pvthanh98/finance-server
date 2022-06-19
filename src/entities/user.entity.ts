@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Friend } from './friend.entity';
 
 @Entity()
 export class User {
@@ -20,14 +21,26 @@ export class User {
   })
   email: string;
 
+  @Column({
+    type: String,
+    default: ''
+  })
+  image: string;
+
   @Column({ type: Boolean, default: true })
   isActive: boolean;
 
   @Column({ type: Boolean, default: false })
   isAdmin: boolean;
 
-  @Column({ type: String })
+  @Column({ type: String, select:false })
   password: string;
+
+  @OneToMany(()=> Friend, friend => friend.user)
+  friends: Friend[];
+
+  // @OneToMany(()=> Friend, friend => friend.friend)
+  // friend_2: Friend[];
 
   @CreateDateColumn()
   createdAt: string;

@@ -14,15 +14,25 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
-const config_1 = require("@nestjs/config");
 const typeorm_1 = require("@nestjs/typeorm");
+const friend_constant_1 = require("../../constants/friend.constant");
+const friend_entity_1 = require("../../entities/friend.entity");
 const user_entity_1 = require("../../entities/user.entity");
 const typeorm_2 = require("typeorm");
+const format_pagination_1 = require("../utils/format-pagination");
 const bcrypt = require('bcryptjs');
 let UserService = class UserService {
-    constructor(usersRepository, configService) {
+    constructor(usersRepository, friendRepository) {
         this.usersRepository = usersRepository;
-        this.configService = configService;
+        this.friendRepository = friendRepository;
+    }
+    async getProfile(userId) {
+        const userProifle = await this.usersRepository.findOne({
+            where: {
+                id: userId
+            }
+        });
+        return userProifle;
     }
     async registerUser(userDto) {
         const salt = bcrypt.genSaltSync(9);
@@ -59,12 +69,136 @@ let UserService = class UserService {
         });
         return users;
     }
+    async addFriend(friendDto, userReq) {
+        const user = await this.usersRepository.findOne({
+            where: { id: userReq.sub }
+        });
+        const friend = await this.usersRepository.findOne({
+            where: { id: friendDto.friendId }
+        });
+        const friendShip = this.friendRepository.create({
+            friend,
+            user
+        });
+        await this.friendRepository.save(friendShip);
+        return {
+            status: true
+        };
+    }
+    async handleFriendRequest(handleFriendDto, userReq) {
+        const { friendShipId, action } = handleFriendDto;
+        const friendShip = await this.friendRepository.createQueryBuilder('friend')
+            .leftJoinAndSelect('friend.user', 'user')
+            .where("friend.friendId = :friendId", { friendId: userReq.sub })
+            .andWhere("friend.id = :id", { id: friendShipId })
+            .andWhere("friend.status = :status", { status: friend_constant_1.FriendStatus.SEND_REQUEST })
+            .getOne();
+        const user = await this.usersRepository.findOne({
+            where: { id: userReq.sub }
+        });
+        if (friendShip) {
+            switch (action) {
+                case friend_constant_1.FriendRequestAction.ACCEPT:
+                    friendShip.status = friend_constant_1.FriendStatus.FRIEND;
+                    const friendShipClone = this.friendRepository.create({
+                        user,
+                        friend: friendShip.user,
+                        status: friend_constant_1.FriendStatus.FRIEND
+                    });
+                    await this.friendRepository.save(friendShipClone);
+                    await this.friendRepository.save(friendShip);
+                    return {
+                        status: true
+                    };
+                case friend_constant_1.FriendRequestAction.DENIED:
+                    await this.friendRepository.remove(friendShip);
+                    return {
+                        status: true
+                    };
+                default:
+                    throw new common_1.BadRequestException("Action not accepted");
+            }
+        }
+        throw new common_1.BadRequestException("Request not found");
+    }
+    async listFriendRequest(query, userReq) {
+        const queryFormat = (0, format_pagination_1.FormatPaginationQuery)(query);
+        const { sub } = userReq;
+        const values = await this.friendRepository.createQueryBuilder("friend")
+            .leftJoinAndSelect("friend.user", "user")
+            .select([
+            "friend.id",
+            "friend.status",
+            "friend.friendId",
+            "friend.createdAt",
+            "friend.updatedAt",
+            "user.id",
+            "user.firstName",
+            "user.lastName",
+        ])
+            .where("friend.friendId = :friendId", { friendId: sub })
+            .andWhere("friend.status = :status", { status: friend_constant_1.FriendStatus.SEND_REQUEST })
+            .skip(queryFormat.offset)
+            .take(queryFormat.limit)
+            .orderBy("friend.createdAt", "DESC")
+            .getManyAndCount();
+        return (0, format_pagination_1.formatPaginationResponse)(values, queryFormat);
+    }
+    async unFriend(friendDto, userReq) {
+        const { friendId } = friendDto;
+        const friendShip = await this.friendRepository.createQueryBuilder("friend")
+            .where("friend.userId = :userId", { userId: userReq.sub })
+            .andWhere("friend.friendId = :friendId", { friendId })
+            .andWhere("friend.status = :status", { status: friend_constant_1.FriendStatus.FRIEND })
+            .getOne();
+        const friendShipPair = await this.friendRepository.createQueryBuilder("friend")
+            .where("friend.userId = :userId", { userId: friendId })
+            .andWhere("friend.friendId = :friendId", { friendId: userReq.sub })
+            .andWhere("friend.status = :status", { status: friend_constant_1.FriendStatus.FRIEND })
+            .getOne();
+        if (friendShip && friendShipPair) {
+            this.friendRepository.remove([
+                friendShip,
+                friendShipPair
+            ]);
+            return {
+                status: true
+            };
+        }
+        return {
+            status: false
+        };
+    }
+    async listFriend(query, userReq) {
+        const queryFormat = (0, format_pagination_1.FormatPaginationQuery)(query);
+        const { sub } = userReq;
+        const values = await this.friendRepository.createQueryBuilder("friend")
+            .leftJoinAndSelect("friend.friend", "user")
+            .select([
+            "friend.id",
+            "friend.friendId",
+            "friend.userId",
+            "friend.createdAt",
+            "friend.status",
+            "user.id",
+            "user.firstName",
+            "user.lastName",
+        ])
+            .where("friend.userId = :userId", { userId: sub })
+            .andWhere("friend.status = :status", { status: friend_constant_1.FriendStatus.FRIEND })
+            .skip(queryFormat.offset)
+            .take(queryFormat.limit)
+            .orderBy("friend.createdAt", "DESC")
+            .getManyAndCount();
+        return (0, format_pagination_1.formatPaginationResponse)(values, queryFormat);
+    }
 };
 UserService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
+    __param(1, (0, typeorm_1.InjectRepository)(friend_entity_1.Friend)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
-        config_1.ConfigService])
+        typeorm_2.Repository])
 ], UserService);
 exports.UserService = UserService;
 //# sourceMappingURL=user.service.js.map

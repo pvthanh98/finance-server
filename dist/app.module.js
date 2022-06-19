@@ -23,6 +23,7 @@ const log_entity_1 = require("./entities/log.entity");
 const common_module_1 = require("./modules/common/common.module");
 const schedule_1 = require("@nestjs/schedule");
 const tasks_service_1 = require("./tasks.service");
+const friend_entity_1 = require("./entities/friend.entity");
 require("dotenv").config();
 let AppModule = class AppModule {
 };
@@ -43,7 +44,8 @@ AppModule = __decorate([
                 },
                 entities: [
                     user_entity_1.User,
-                    log_entity_1.Log
+                    log_entity_1.Log,
+                    friend_entity_1.Friend
                 ],
                 synchronize: true,
             }),

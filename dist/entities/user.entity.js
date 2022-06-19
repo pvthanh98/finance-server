@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const typeorm_1 = require("typeorm");
+const friend_entity_1 = require("./friend.entity");
 let User = class User {
 };
 __decorate([
@@ -36,6 +37,13 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
 __decorate([
+    (0, typeorm_1.Column)({
+        type: String,
+        default: ''
+    }),
+    __metadata("design:type", String)
+], User.prototype, "image", void 0);
+__decorate([
     (0, typeorm_1.Column)({ type: Boolean, default: true }),
     __metadata("design:type", Boolean)
 ], User.prototype, "isActive", void 0);
@@ -44,9 +52,13 @@ __decorate([
     __metadata("design:type", Boolean)
 ], User.prototype, "isAdmin", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: String }),
+    (0, typeorm_1.Column)({ type: String, select: false }),
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => friend_entity_1.Friend, friend => friend.user),
+    __metadata("design:type", Array)
+], User.prototype, "friends", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", String)

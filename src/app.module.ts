@@ -14,6 +14,7 @@ import { Log } from './entities/log.entity';
 import { CommonModule } from './modules/common/common.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksService } from './tasks.service';
+import { Friend } from './entities/friend.entity';
 require("dotenv").config()
 
 @Module({
@@ -36,7 +37,8 @@ require("dotenv").config()
       },
       entities: [
         User,
-        Log
+        Log,
+        Friend
       ],
       synchronize: true,
     }),
