@@ -235,6 +235,7 @@ export class UserService {
                 "friend.friendId",
                 "friend.userId",
                 "friend.createdAt",
+                "friend.email",
                 "friend.status",
                 "user.id",
                 "user.firstName",
