@@ -208,7 +208,8 @@ let UserService = class UserService {
             "user.id",
             "user.firstName",
             "user.lastName",
-            "user.image"
+            "user.image",
+            "user.email"
         ])
             .where("friend.userId = :userId", { userId: sub })
             .andWhere("friend.status = :status", { status: friend_constant_1.FriendStatus.FRIEND })

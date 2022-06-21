@@ -235,12 +235,12 @@ export class UserService {
                 "friend.friendId",
                 "friend.userId",
                 "friend.createdAt",
-                "friend.email",
                 "friend.status",
                 "user.id",
                 "user.firstName",
                 "user.lastName",
-                "user.image"
+                "user.image",
+                "user.email"
             ])
             .where("friend.userId = :userId", { userId: sub })
             .andWhere("friend.status = :status", { status: FriendStatus.FRIEND })
