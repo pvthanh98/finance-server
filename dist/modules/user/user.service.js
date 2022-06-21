@@ -97,6 +97,19 @@ let UserService = class UserService {
             .where("friend.userId = :userId", { userId: userReq.sub })
             .andWhere("friend.friendId = :friendId", { friendId: friendDto.friendId })
             .getOne();
+        const FriendShipPair = await this.friendRepository.createQueryBuilder("friend")
+            .select()
+            .where("friend.userId = :userId", { userId: friendDto.friendId })
+            .andWhere("friend.friendId = :friendId", { friendId: userReq.sub })
+            .getOne();
+        if (isFriendShipExist && FriendShipPair) {
+            throw new common_1.BadRequestException("Two you have already be friends");
+            return;
+        }
+        if (isFriendShipExist) {
+            throw new common_1.BadRequestException("Send request already!");
+            return;
+        }
         if (!isFriendShipExist) {
             const friendShip = this.friendRepository.create({
                 friend,
@@ -107,7 +120,6 @@ let UserService = class UserService {
                 status: true
             };
         }
-        throw new common_1.BadRequestException("Two you have already be friends");
     }
     async handleFriendRequest(handleFriendDto, userReq) {
         const { friendShipId, action } = handleFriendDto;
@@ -220,6 +232,8 @@ let UserService = class UserService {
         return (0, format_pagination_1.formatPaginationResponse)(values, queryFormat);
     }
     async execute() {
+        const user = await this.friendRepository.find();
+        return this.friendRepository.remove(user);
         return this.friendRepository.find();
     }
 };
