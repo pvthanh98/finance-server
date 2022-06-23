@@ -15,6 +15,7 @@ import { CommonModule } from './modules/common/common.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksService } from './tasks.service';
 import { Friend } from './entities/friend.entity';
+import { ChatGateway } from './app.gateway';
 require("dotenv").config()
 
 @Module({
@@ -45,6 +46,6 @@ require("dotenv").config()
     CommonModule
   ],
   controllers: [AppController],
-  providers: [AppService, TasksService],
+  providers: [AppService, TasksService, ChatGateway],
 })
 export class AppModule {}

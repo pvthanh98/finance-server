@@ -24,6 +24,7 @@ const common_module_1 = require("./modules/common/common.module");
 const schedule_1 = require("@nestjs/schedule");
 const tasks_service_1 = require("./tasks.service");
 const friend_entity_1 = require("./entities/friend.entity");
+const app_gateway_1 = require("./app.gateway");
 require("dotenv").config();
 let AppModule = class AppModule {
 };
@@ -56,7 +57,7 @@ AppModule = __decorate([
             common_module_1.CommonModule
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService, tasks_service_1.TasksService],
+        providers: [app_service_1.AppService, tasks_service_1.TasksService, app_gateway_1.ChatGateway],
     })
 ], AppModule);
 exports.AppModule = AppModule;
