@@ -11,5 +11,11 @@ export declare class CommonController {
         totalPage: number;
         result: any[];
     }>;
+    sendPublicMessage(query: PaginationQueryType): Promise<{
+        currentPage: number;
+        recordPerPage: number;
+        totalPage: number;
+        result: any[];
+    }>;
     execute(): Promise<import("../../entities/friend.entity").Friend[]>;
 }

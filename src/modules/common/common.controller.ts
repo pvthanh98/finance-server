@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Query, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { LogFrom, LogType } from 'src/constants/common.constant';
@@ -8,6 +8,7 @@ import { LogInteface } from 'src/types/log.types';
 import { CommonService } from './common.service';
 import { diskStorage } from 'multer';
 import path, { join } from 'path';
+import { PublicMessageDto } from '../chat/dto/message.dto';
 
 @Controller('common')
 export class CommonController {
@@ -26,6 +27,11 @@ export class CommonController {
   getLog(@Query(PaginationQueryPipe) query: PaginationQueryType) {
     return this.commonService.getLogs(query)
   }
+
+  @Get('chat/public-message')
+    sendPublicMessage (@Query(PaginationQueryPipe) query: PaginationQueryType){
+        return this.commonService.getPublicMessages(query);
+    }
 
   // @Post('upload')
   // @UseInterceptors(FileInterceptor('file', {

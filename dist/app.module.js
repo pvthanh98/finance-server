@@ -25,6 +25,11 @@ const schedule_1 = require("@nestjs/schedule");
 const tasks_service_1 = require("./tasks.service");
 const friend_entity_1 = require("./entities/friend.entity");
 const app_gateway_1 = require("./app.gateway");
+const conversation_1 = require("./entities/conversation");
+const conversation_user_1 = require("./entities/conversation-user");
+const message_1 = require("./entities/message");
+const conversation_module_1 = require("./modules/admin/conversation/conversation.module");
+const chat_module_1 = require("./modules/chat/chat.module");
 require("dotenv").config();
 let AppModule = class AppModule {
 };
@@ -46,7 +51,10 @@ AppModule = __decorate([
                 entities: [
                     user_entity_1.User,
                     log_entity_1.Log,
-                    friend_entity_1.Friend
+                    friend_entity_1.Friend,
+                    conversation_1.Conversation,
+                    conversation_user_1.ConversationUser,
+                    message_1.Message
                 ],
                 synchronize: true,
             }),
@@ -54,7 +62,9 @@ AppModule = __decorate([
             shared_modules_module_1.SharedModulesModule,
             auth_module_1.AuthModule,
             user_module_1.UserModule,
-            common_module_1.CommonModule
+            common_module_1.CommonModule,
+            conversation_module_1.ConversationModule,
+            chat_module_1.ChatModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, tasks_service_1.TasksService, app_gateway_1.ChatGateway],

@@ -32,6 +32,9 @@ let CommonController = class CommonController {
     getLog(query) {
         return this.commonService.getLogs(query);
     }
+    sendPublicMessage(query) {
+        return this.commonService.getPublicMessages(query);
+    }
     execute() {
         return this.commonService.execute();
     }
@@ -50,6 +53,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], CommonController.prototype, "getLog", null);
+__decorate([
+    (0, common_1.Get)('chat/public-message'),
+    __param(0, (0, common_1.Query)(pagination_query_pipe_1.PaginationQueryPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], CommonController.prototype, "sendPublicMessage", null);
 __decorate([
     (0, common_1.Get)('execute'),
     __metadata("design:type", Function),

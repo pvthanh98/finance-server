@@ -1,5 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { ConversationUser } from './conversation-user';
 import { Friend } from './friend.entity';
+import { Message } from './message';
 
 @Entity()
 export class User {
@@ -39,8 +41,11 @@ export class User {
   @OneToMany(()=> Friend, friend => friend.user)
   friends: Friend[];
 
-  // @OneToMany(()=> Friend, friend => friend.friend)
-  // friend_2: Friend[];
+  @OneToMany(()=> ConversationUser, conversationUser => conversationUser.user)
+  conversationUsers: ConversationUser[];
+
+  @OneToMany(()=> Message, message => message.fromUser)
+  messages: Message[];
 
   @CreateDateColumn()
   createdAt: string;

@@ -10,11 +10,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChatGateway = void 0;
+const common_1 = require("@nestjs/common");
 const websockets_1 = require("@nestjs/websockets");
 const socket_io_1 = require("socket.io");
 const socketEvent = require("./constants/socket-event.constant");
+const chat_service_1 = require("./modules/chat/chat.service");
 let ChatGateway = class ChatGateway {
+    constructor(chatService) {
+        this.chatService = chatService;
+    }
     handleMessage(client, data) {
+        this.chatService.createPublicMessage({
+            body: data.body,
+            guestName: data.user.name,
+            guestId: data.user.id
+        });
         this.server.emit(socketEvent.SERVER_EMIT_BROADCAST_MESSAGE, data);
     }
 };
@@ -31,7 +41,9 @@ __decorate([
 ChatGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({
         cors: true
-    })
+    }),
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [chat_service_1.ChatService])
 ], ChatGateway);
 exports.ChatGateway = ChatGateway;
 //# sourceMappingURL=app.gateway.js.map

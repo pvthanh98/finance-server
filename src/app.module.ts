@@ -16,6 +16,11 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TasksService } from './tasks.service';
 import { Friend } from './entities/friend.entity';
 import { ChatGateway } from './app.gateway';
+import { Conversation } from './entities/conversation';
+import { ConversationUser } from './entities/conversation-user';
+import { Message } from './entities/message';
+import { ConversationModule } from './modules/admin/conversation/conversation.module';
+import { ChatModule } from './modules/chat/chat.module';
 require("dotenv").config()
 
 @Module({
@@ -35,7 +40,10 @@ require("dotenv").config()
       entities: [
         User,
         Log,
-        Friend
+        Friend,
+        Conversation,
+        ConversationUser,
+        Message
       ],
       synchronize: true,
     }),
@@ -43,7 +51,9 @@ require("dotenv").config()
     SharedModulesModule,
     AuthModule,
     UserModule,
-    CommonModule
+    CommonModule,
+    ConversationModule,
+    ChatModule
   ],
   controllers: [AppController],
   providers: [AppService, TasksService, ChatGateway],
