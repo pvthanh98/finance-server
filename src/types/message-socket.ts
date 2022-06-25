@@ -4,4 +4,5 @@ export interface MessageBroadcast {
         name: string
     },
     body: string;
+    createdAt: string;
 }

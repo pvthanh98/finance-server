@@ -57,7 +57,6 @@ export class ChatService {
             where: { name: ConversationEnum.PUBLIC_CONVERSATION_NAME }
         });
 
-        console.log("CREATE MESSAGE")
         this.messageRepository
             .createQueryBuilder('message')
             .insert()

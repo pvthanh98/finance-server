@@ -28,7 +28,10 @@ export class ChatGateway {
             guestName: data.user.name,
             guestId: data.user.id
         })
-        this.server.emit(socketEvent.SERVER_EMIT_BROADCAST_MESSAGE, data)
+        this.server.emit(socketEvent.SERVER_EMIT_BROADCAST_MESSAGE, {
+            ...data,
+            createdAt: new Date().toISOString()
+        })
     }
 
 }
