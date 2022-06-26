@@ -89,6 +89,7 @@ export class ChatGateway {
                 fromUserId: client.sub,
                 type: data.type as MessageTypeEnum
             })
+            this.conversationSerice.updateLastMessage(data.conversationId,data.body)
         } else {
             console.log("Status 401")
         }

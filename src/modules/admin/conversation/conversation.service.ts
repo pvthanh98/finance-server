@@ -174,4 +174,10 @@ export class ConversationService {
         return socketIds
     }
 
+    public updateLastMessage (conversationId: string, lastMessage:string){
+        this.conversationRepository.update({
+            id: conversationId
+        }, {lastMessage})
+    }
+
 }
