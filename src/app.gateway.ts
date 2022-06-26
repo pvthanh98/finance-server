@@ -108,7 +108,9 @@ export class ChatGateway {
             } else {
                 toSocketIds = [...client.partnerSocketIds]
             }
-            this.server.to(toSocketIds).emit(socketEvent.SERVER_EMIT_TYPING,'')
+            this.server.to(toSocketIds).emit(socketEvent.SERVER_EMIT_TYPING,{
+                ...data
+            })
         } else {
             console.log("Status 401")
         }
@@ -124,7 +126,9 @@ export class ChatGateway {
             } else {
                 toSocketIds = [...client.partnerSocketIds]
             }
-            this.server.to(toSocketIds).emit(socketEvent.SERVER_EMIT_NOT_TYPING,'')
+            this.server.to(toSocketIds).emit(socketEvent.SERVER_EMIT_NOT_TYPING,{
+                ...data
+            })
         } else {
             console.log("Status 401")
         }
