@@ -4,12 +4,16 @@ import { ConversationController } from './conversation.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Conversation } from 'src/entities/conversation';
 import { Message } from 'src/entities/message';
+import { UserModule } from 'src/modules/user/user.module';
+import { ConversationUser } from 'src/entities/conversation-user';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Conversation, Message]),
+    TypeOrmModule.forFeature([Conversation, Message, ConversationUser]),
+    UserModule
   ],
   providers: [ConversationService],
-  controllers: [ConversationController]
+  controllers: [ConversationController],
+  exports: [ConversationService]
 })
 export class ConversationModule { }

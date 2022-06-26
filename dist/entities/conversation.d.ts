@@ -3,6 +3,7 @@ import { Message } from './message';
 export declare class Conversation {
     id: string;
     name: string;
+    lastMessage: string;
     isGroup: boolean;
     conversationUsers: ConversationUser[];
     messages: Message[];

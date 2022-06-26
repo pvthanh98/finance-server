@@ -25,7 +25,7 @@ let ChatGateway = class ChatGateway {
             guestName: data.user.name,
             guestId: data.user.id
         });
-        this.server.emit(socketEvent.SERVER_EMIT_BROADCAST_MESSAGE, data);
+        this.server.emit(socketEvent.SERVER_EMIT_BROADCAST_MESSAGE, Object.assign(Object.assign({}, data), { createdAt: new Date().toISOString() }));
     }
 };
 __decorate([

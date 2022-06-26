@@ -2,10 +2,13 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FriendRequestAction, FriendStatus } from 'src/constants/friend.constant';
+import { Conversation } from 'src/entities/conversation';
+import { ConversationUser } from 'src/entities/conversation-user';
 import { Friend } from 'src/entities/friend.entity';
 import { User } from 'src/entities/user.entity';
 import { PaginationQueryType } from 'src/types/common.type';
 import { Repository } from 'typeorm';
+import { ConversationService } from '../admin/conversation/conversation.service';
 import { FormatPaginationQuery, formatPaginationResponse } from '../utils/format-pagination';
 import { UnAndAddFriendDto } from './dto/add-friend.dto';
 import { HandleFriendRequestDto } from './dto/handle-friend.dto';
@@ -21,24 +24,28 @@ export class UserService {
         private usersRepository: Repository<User>,
         @InjectRepository(Friend)
         private friendRepository: Repository<Friend>,
+        @InjectRepository(Conversation)
+        private conversationRepository: Repository<Conversation>,
+        @InjectRepository(ConversationUser)
+        private conversationUserRepository: Repository<ConversationUser>,
     ) { }
 
-    async getProfile(userId:string){
+    async getProfile(userId: string) {
         const userProifle = await this.usersRepository.findOne({
-            where:{
-                id:userId
+            where: {
+                id: userId
             }
         });
         return userProifle;
     }
- 
-    async updateProfile(updateProfileDto: UpdateProfileDto, userId: string){
-        await this.usersRepository.update({id: userId},{
-                ...updateProfileDto
+
+    async updateProfile(updateProfileDto: UpdateProfileDto, userId: string) {
+        await this.usersRepository.update({ id: userId }, {
+            ...updateProfileDto
         });
 
         const user = await this.usersRepository.findOne({
-            where:{
+            where: {
                 id: userId
             }
         });
@@ -65,11 +72,11 @@ export class UserService {
             where: {
                 email: email
             },
-            select:{
-                password:true,
-                id:true,
-                isAdmin:true,
-                email:true
+            select: {
+                password: true,
+                id: true,
+                isAdmin: true,
+                email: true
             }
         });
         return user;
@@ -80,14 +87,14 @@ export class UserService {
         const formatQuery = FormatPaginationQuery(query);
 
         let users = this.usersRepository.createQueryBuilder("user")
-            .select(["user.id", "user.firstName","user.lastName","user.email","user.image", "user.createdAt"])
+            .select(["user.id", "user.firstName", "user.lastName", "user.email", "user.image", "user.createdAt"])
             .skip()
             .limit()
-        
+
         if (search) {
             users
-                .where("LOWER(user.firstName) = LOWER(:search)", {search})
-                .orWhere("LOWER(user.lastName) = LOWER(:search)", {search})
+                .where("LOWER(user.firstName) = LOWER(:search)", { search })
+                .orWhere("LOWER(user.lastName) = LOWER(:search)", { search })
         }
 
         let resulst = await users.getManyAndCount();
@@ -95,7 +102,7 @@ export class UserService {
     }
 
     async addFriend(friendDto: UnAndAddFriendDto, userReq: any) {
-        if (friendDto.friendId.toString() === userReq.sub.toString()) 
+        if (friendDto.friendId.toString() === userReq.sub.toString())
             throw new BadRequestException("Cannot add friend your self")
         const user = await this.usersRepository.findOne({
             where: { id: userReq.sub }
@@ -106,51 +113,50 @@ export class UserService {
 
         const isFriendShipExist = await this.friendRepository.createQueryBuilder("friend")
             .select()
-            .where("friend.userId = :userId", {userId: userReq.sub})
-            .andWhere("friend.friendId = :friendId", {friendId: friendDto.friendId})
+            .where("friend.userId = :userId", { userId: userReq.sub })
+            .andWhere("friend.friendId = :friendId", { friendId: friendDto.friendId })
             .getOne();
 
         const FriendShipPair = await this.friendRepository.createQueryBuilder("friend")
-        .select()
-        .where("friend.userId = :userId", {userId: friendDto.friendId})
-        .andWhere("friend.friendId = :friendId", {friendId: userReq.sub})
-        .getOne();
+            .select()
+            .where("friend.userId = :userId", { userId: friendDto.friendId })
+            .andWhere("friend.friendId = :friendId", { friendId: userReq.sub })
+            .getOne();
 
-        if(isFriendShipExist && FriendShipPair){
+        if (isFriendShipExist && FriendShipPair) {
             throw new BadRequestException("Two you have already be friends");
             return;
         }
 
-        if(isFriendShipExist){
+        if (isFriendShipExist) {
             throw new BadRequestException("Send request already!");
             return;
         }
 
 
-        if(!isFriendShipExist){
+        if (!isFriendShipExist) {
             const friendShip = this.friendRepository.create({
                 friend,
                 user
             });
-    
+
             await this.friendRepository.save(friendShip);
             return {
                 status: true
             }
         }
-        
+
     }
 
     async handleFriendRequest(handleFriendDto: HandleFriendRequestDto, userReq: any) {
         const { friendShipId, action } = handleFriendDto;
-
         const friendShip = await this.friendRepository.createQueryBuilder('friend')
             .leftJoinAndSelect('friend.user', 'user')
             .where("friend.friendId = :friendId", { friendId: userReq.sub })
             .andWhere("friend.id = :id", { id: friendShipId })
             .andWhere("friend.status = :status", { status: FriendStatus.SEND_REQUEST })
             .getOne();
-
+        
         const user = await this.usersRepository.findOne({
             where: { id: userReq.sub }
         });
@@ -166,6 +172,8 @@ export class UserService {
                     });
                     await this.friendRepository.save(friendShipClone);
                     await this.friendRepository.save(friendShip);
+                    /** TODO: create conversation69 */
+                    await this.createConversation(userReq.sub, friendShip.user.id);
                     return {
                         status: true
                     }
@@ -269,7 +277,7 @@ export class UserService {
         return formatPaginationResponse(values, queryFormat);
     }
 
-    async execute(){
+    async execute() {
         // /** testing only */
         // const user = await this.usersRepository.findOne({
         //     where:{
@@ -286,6 +294,97 @@ export class UserService {
 
         return this.friendRepository.find();
     }
-    
+
+    private async createConversation(userId: string, friendId: string) {
+        console.log("CHECKOUT POINT 6")
+        const conversationExistId = await this.findConversationBetweenUsers(userId, friendId);
+        console.log("CHECKOUT POINT 11")
+        if (!conversationExistId) {
+            console.log("CHECKOUT POINT 12")
+            const conversationId = await this.createSingleConversation(userId, friendId)
+            return conversationId;
+        }
+        return conversationExistId
+    }
+
+
+    public async findUserById(userId: string) {
+        const user = await this.usersRepository.findOne({
+            where: { id: userId }
+        })
+        return user;
+    }
+
+
+    public async findConversationBetweenUsers(userId: string, friendId: string) {
+        const conversationUser1 = await this.conversationUserRepository
+            .createQueryBuilder('conversationUser1')
+            .innerJoinAndSelect('conversationUser1.user', 'user')
+            .select([
+                'conversationUser1.id',
+                'user.id',
+                'conversationUser1.conversationId'
+            ])
+            .where('user.id = :userId', { userId })
+            .getMany();
+
+        const conversationUser2 = await this.conversationUserRepository
+            .createQueryBuilder('conversationUser2')
+            .innerJoinAndSelect('conversationUser2.user', 'user')
+            .select([
+                'conversationUser2.id',
+                'conversationUser2.conversationId',
+                'user.id'
+            ])
+            .where('user.id = :userId', { userId: friendId })
+            .getMany();
+
+        for (let conv1 of conversationUser1) {
+            for (let conv2 of conversationUser2) {
+                if (conv1.conversationId === conv2.conversationId) {
+                    return conv1.id;
+                }
+            }
+
+        }
+
+        return null;
+    }
+
+    public async createSingleConversation(userId: string, friendId: string) {
+        const conversationId = await this.findConversationBetweenUsers(userId, friendId);
+        console.log("CHECKOUT POINT 13")
+        if (!conversationId) {
+            console.log("CHECKOUT POINT 14")
+            const user = await this.usersRepository.findOne({
+                where: { id: userId }
+            })
+            console.log("CHECKOUT POINT 15")
+            const friend = await this.usersRepository.findOne({
+                where: { id: friendId }
+            })
+            const conversation = this.conversationRepository.create({
+                name: `${userId}-${friendId}`,
+            })
+            console.log("CHECKOUT POINT 16")
+
+            await this.conversationRepository.save(conversation);
+            const conversationUser1 = this.conversationUserRepository.create({
+                conversation: conversation,
+                user
+            })
+            console.log("CHECKOUT POINT 17")
+            const conversationUser2 = this.conversationUserRepository.create({
+                conversation: conversation,
+                user: friend
+            })
+            console.log("CHECKOUT POINT 18")
+            await this.conversationUserRepository.save(conversationUser1)
+            await this.conversationUserRepository.save(conversationUser2)
+            console.log("CHECKOUT POINT 19")
+            return conversation.id;
+        }
+    }
+
 
 }

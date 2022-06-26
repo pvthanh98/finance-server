@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { Conversation } from './conversation';
 import { User } from './user.entity';
 
@@ -7,10 +7,16 @@ export class ConversationUser {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(()=> User, user=> user.conversationUsers)
+  @ManyToOne(() => User, user => user.conversationUsers)
   user: User;
 
-  @ManyToOne(()=> Conversation, conversation=> conversation.conversationUsers)
+
+  @Column({ type: String })
+  conversationId: string;
+
+  // @Column({name:'conversationId', type: String})
+  @ManyToOne(() => Conversation, conversation => conversation.conversationUsers)
+  @JoinColumn({ name: 'conversationId' })
   conversation: Conversation;
 
   @CreateDateColumn()

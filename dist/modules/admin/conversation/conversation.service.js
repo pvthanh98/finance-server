@@ -20,10 +20,14 @@ const typeorm_2 = require("typeorm");
 const conversation_enum_1 = require("../../../constants/conversation-enum");
 const format_pagination_1 = require("../../utils/format-pagination");
 const message_1 = require("../../../entities/message");
+const conversation_user_1 = require("../../../entities/conversation-user");
+const user_service_1 = require("../../user/user.service");
 let ConversationService = class ConversationService {
-    constructor(conversationRepository, messageRepository) {
+    constructor(conversationRepository, messageRepository, conversationUserRepository, userService) {
         this.conversationRepository = conversationRepository;
         this.messageRepository = messageRepository;
+        this.conversationUserRepository = conversationUserRepository;
+        this.userService = userService;
     }
     async checkNameExist(name) {
         if (!name)
@@ -68,13 +72,67 @@ let ConversationService = class ConversationService {
     }
     async deleteAllMessage() {
     }
+    async findConversationBetweenUsers(userId, friendId) {
+        const conversationUser1 = await this.conversationUserRepository
+            .createQueryBuilder('conversationUser1')
+            .innerJoinAndSelect('conversationUser1.user', 'user')
+            .select([
+            'conversationUser1.id',
+            'conversationUser1.isGroupd'
+        ])
+            .where('conversation1.isGroup = :isGroup', { isGroup: false })
+            .andWhere('conversationUser2.userId = :userId', { userId })
+            .getMany();
+        const conversationUser2 = await this.conversationUserRepository
+            .createQueryBuilder('conversationUser2')
+            .innerJoinAndSelect('conversationUser2.user', 'user')
+            .select([
+            'conversationUser2.id',
+            'conversationUser2.isGroupd'
+        ])
+            .where('conversationUser2.isGroup = :isGroup', { isGroup: false })
+            .andWhere('conversationUser2.userId = :userId', { userId: friendId })
+            .getMany();
+        for (let conv1 of conversationUser1) {
+            for (let conv2 of conversationUser2) {
+                if (conv1.id === conv2.id)
+                    return conv1.id;
+            }
+        }
+        return null;
+    }
+    async createSingleConversation(userId, friendId) {
+        const conversationId = await this.findConversationBetweenUsers(userId, friendId);
+        if (!conversationId) {
+            const user = await this.userService.findUserById(userId);
+            const friend = await this.userService.findUserById(friendId);
+            const conversation = this.conversationRepository.create({
+                name: `${userId}-${friendId}`,
+            });
+            await this.conversationRepository.save(conversation);
+            const conversationUser1 = this.conversationUserRepository.create({
+                conversation: conversation,
+                user
+            });
+            const conversationUser2 = this.conversationUserRepository.create({
+                conversation: conversation,
+                user: friend
+            });
+            await this.conversationUserRepository.save(conversationUser1);
+            await this.conversationUserRepository.save(conversationUser2);
+            return conversation.id;
+        }
+    }
 };
 ConversationService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(conversation_1.Conversation)),
     __param(1, (0, typeorm_1.InjectRepository)(message_1.Message)),
+    __param(2, (0, typeorm_1.InjectRepository)(conversation_user_1.ConversationUser)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
-        typeorm_2.Repository])
+        typeorm_2.Repository,
+        typeorm_2.Repository,
+        user_service_1.UserService])
 ], ConversationService);
 exports.ConversationService = ConversationService;
 //# sourceMappingURL=conversation.service.js.map

@@ -14,13 +14,15 @@ const user_entity_1 = require("../../entities/user.entity");
 const user_service_1 = require("./user.service");
 const user_controller_1 = require("./user.controller");
 const friend_entity_1 = require("../../entities/friend.entity");
+const conversation_1 = require("../../entities/conversation");
+const conversation_user_1 = require("../../entities/conversation-user");
 let UserModule = class UserModule {
 };
 UserModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, friend_entity_1.Friend]),
-            config_1.ConfigModule,
+            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, friend_entity_1.Friend, conversation_1.Conversation, conversation_user_1.ConversationUser]),
+            config_1.ConfigModule
         ],
         providers: [user_service_1.UserService],
         exports: [user_service_1.UserService],

@@ -13,6 +13,12 @@ export class Conversation {
   name: string;
 
   @Column({
+    type: String,
+    default: ''
+  })
+  lastMessage: string;
+
+  @Column({
     type: Boolean,
     default: false
   })

@@ -1,3 +1,5 @@
+import { Conversation } from 'src/entities/conversation';
+import { ConversationUser } from 'src/entities/conversation-user';
 import { Friend } from 'src/entities/friend.entity';
 import { User } from 'src/entities/user.entity';
 import { PaginationQueryType } from 'src/types/common.type';
@@ -10,7 +12,9 @@ import { UserRegisterResponse } from './type/user-register.response';
 export declare class UserService {
     private usersRepository;
     private friendRepository;
-    constructor(usersRepository: Repository<User>, friendRepository: Repository<Friend>);
+    private conversationRepository;
+    private conversationUserRepository;
+    constructor(usersRepository: Repository<User>, friendRepository: Repository<Friend>, conversationRepository: Repository<Conversation>, conversationUserRepository: Repository<ConversationUser>);
     getProfile(userId: string): Promise<User>;
     updateProfile(updateProfileDto: UpdateProfileDto, userId: string): Promise<User>;
     registerUser(userDto: CreateUserDto): Promise<UserRegisterResponse>;
@@ -43,4 +47,8 @@ export declare class UserService {
         result: any[];
     }>;
     execute(): Promise<Friend[]>;
+    private createConversation;
+    findUserById(userId: string): Promise<User>;
+    findConversationBetweenUsers(userId: string, friendId: string): Promise<string>;
+    createSingleConversation(userId: string, friendId: string): Promise<string>;
 }

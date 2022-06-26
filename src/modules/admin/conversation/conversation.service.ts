@@ -8,6 +8,8 @@ import { ConversationEnum } from '../../../constants/conversation-enum';
 import { PaginationQueryType } from 'src/types/common.type';
 import { FormatPaginationQuery, formatPaginationResponse } from 'src/modules/utils/format-pagination';
 import { Message } from 'src/entities/message';
+import { ConversationUser } from 'src/entities/conversation-user';
+import { UserService } from 'src/modules/user/user.service';
 
 @Injectable()
 export class ConversationService {
@@ -16,9 +18,13 @@ export class ConversationService {
         private conversationRepository: Repository<Conversation>,
         @InjectRepository(Message)
         private messageRepository: Repository<Message>,
+        @InjectRepository(ConversationUser)
+        private conversationUserRepository: Repository<ConversationUser>,
+        private userService: UserService,
+
     ) { }
 
-    private async checkNameExist(name: string | null | undefined) : Promise<boolean>{
+    private async checkNameExist(name: string | null | undefined): Promise<boolean> {
         if (!name) return true;
         if (name.includes(ConversationEnum.ROOT_PREFIX)) {
             /** FIND WHETHER THE NAME EXIST */
@@ -74,7 +80,66 @@ export class ConversationService {
         return formatPaginationResponse(resulst, formatQuery);
     }
 
-    public async deleteAllMessage () {
+    public async deleteAllMessage() {
 
     }
+
+    public async findConversationBetweenUsers(userId: string, friendId: string) {
+
+        const conversationUser1 = await this.conversationUserRepository
+            .createQueryBuilder('conversationUser1')
+            .innerJoinAndSelect('conversationUser1.user', 'user')
+            .select([
+                'conversationUser1.id',
+                'conversationUser1.isGroupd'
+            ])
+            .where('conversation1.isGroup = :isGroup', { isGroup: false })
+            .andWhere('conversationUser2.userId = :userId', { userId })
+            .getMany();
+
+        const conversationUser2 = await this.conversationUserRepository
+            .createQueryBuilder('conversationUser2')
+            .innerJoinAndSelect('conversationUser2.user', 'user')
+            .select([
+                'conversationUser2.id',
+                'conversationUser2.isGroupd'
+            ])
+            .where('conversationUser2.isGroup = :isGroup', { isGroup: false })
+            .andWhere('conversationUser2.userId = :userId', { userId: friendId })
+            .getMany();
+
+        //check if is existed
+        for (let conv1 of conversationUser1) {
+            for (let conv2 of conversationUser2) {
+                if (conv1.id === conv2.id) return conv1.id;
+            }
+        }
+        return null;
+    }
+
+    public async createSingleConversation(userId: string, friendId: string) {
+        const conversationId = await this.findConversationBetweenUsers(userId, friendId);
+
+        if (!conversationId) {
+            const user = await this.userService.findUserById(userId)
+            const friend = await this.userService.findUserById(friendId)
+            const conversation = this.conversationRepository.create({
+                name: `${userId}-${friendId}`,
+            })
+
+            await this.conversationRepository.save(conversation);
+            const conversationUser1 = this.conversationUserRepository.create({
+                conversation: conversation,
+                user
+            })
+            const conversationUser2 = this.conversationUserRepository.create({
+                conversation: conversation,
+                user: friend
+            })
+            await this.conversationUserRepository.save(conversationUser1)
+            await this.conversationUserRepository.save(conversationUser2)
+            return conversation.id;
+        }
+    }
+
 }

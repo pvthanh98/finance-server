@@ -27,6 +27,13 @@ __decorate([
 ], Conversation.prototype, "name", void 0);
 __decorate([
     (0, typeorm_1.Column)({
+        type: String,
+        default: ''
+    }),
+    __metadata("design:type", String)
+], Conversation.prototype, "lastMessage", void 0);
+__decorate([
+    (0, typeorm_1.Column)({
         type: Boolean,
         default: false
     }),

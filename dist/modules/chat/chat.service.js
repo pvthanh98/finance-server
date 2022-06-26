@@ -59,7 +59,6 @@ let ChatService = class ChatService {
         const conversation = await this.conversationRepository.findOne({
             where: { name: conversation_enum_1.ConversationEnum.PUBLIC_CONVERSATION_NAME }
         });
-        console.log("CREATE MESSAGE");
         this.messageRepository
             .createQueryBuilder('message')
             .insert()
