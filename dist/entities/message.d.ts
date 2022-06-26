@@ -5,6 +5,7 @@ export declare class Message {
     body: string;
     type: string;
     fromUser: User;
+    conversationId: string;
     conversation: Conversation;
     guestName: string;
     guestId: string;

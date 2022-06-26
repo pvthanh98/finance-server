@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConversationEnum } from 'src/constants/conversation-enum';
 import { Conversation } from 'src/entities/conversation';
@@ -127,5 +127,45 @@ export class ChatService {
             [customConversations, conversationUserResponse[1]],
             formatQuery
         );
+    }
+
+
+    public async getConversationMessages(conversationId: string ,query: PaginationQueryType, userReq: UserPayload) {
+        const formatQuery = FormatPaginationQuery(query)
+
+        const conversation = await this.conversationRepository.createQueryBuilder('conversation')
+            .innerJoinAndSelect(
+                "conversation.conversationUsers",
+                'ConversationUser'
+            )
+            .select([
+                'conversation.id',
+                'ConversationUser.userId',
+            ])
+            .where('conversation.id = :conversationId', { conversationId })
+            .andWhere('ConversationUser.userId = :sub', { sub: userReq.sub })
+            .getOne()
+    
+        if (!conversation) throw new NotFoundException("Not found");
+
+        const messages = await this.messageRepository.createQueryBuilder('message')
+            .innerJoinAndSelect('message.fromUser', 'user')
+            .select([
+                'message.id',
+                'message.body',
+                'message.createdAt',
+                'message.updatedAt',
+                'message.type',
+                'user.id',
+                'user.firstName',
+                'user.lastName',
+                'user.image'
+            ])
+            .skip(formatQuery.offset)
+            .take(formatQuery.limit)
+            .getManyAndCount()
+
+        return formatPaginationResponse(messages, formatQuery)
+            
     }
 }

@@ -24,6 +24,9 @@ let ChatController = class ChatController {
     getConversation(query, req) {
         return this.chatService.getConversation(query, req.user);
     }
+    getConversationMessages(id, query, req) {
+        return this.chatService.getConversationMessages(id, query, req.user);
+    }
 };
 __decorate([
     (0, common_1.Get)('conversation'),
@@ -33,6 +36,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], ChatController.prototype, "getConversation", null);
+__decorate([
+    (0, common_1.Get)('conversation/:id/message'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Query)(pagination_query_pipe_1.PaginationQueryPipe)),
+    __param(2, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object, Object]),
+    __metadata("design:returntype", void 0)
+], ChatController.prototype, "getConversationMessages", null);
 ChatController = __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Controller)('chat'),

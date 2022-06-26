@@ -41,7 +41,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({
         type: String,
-        default: ''
+        default: 'https://tp-finance-server.herokuapp.com/static/default-profile-icon.jpg'
     }),
     __metadata("design:type", String)
 ], User.prototype, "image", void 0);

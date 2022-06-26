@@ -38,7 +38,12 @@ __decorate([
     __metadata("design:type", user_entity_1.User)
 ], Message.prototype, "fromUser", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ type: String }),
+    __metadata("design:type", String)
+], Message.prototype, "conversationId", void 0);
+__decorate([
     (0, typeorm_1.ManyToOne)(() => conversation_1.Conversation, conversation => conversation.messages),
+    (0, typeorm_1.JoinColumn)({ name: 'conversationId' }),
     __metadata("design:type", conversation_1.Conversation)
 ], Message.prototype, "conversation", void 0);
 __decorate([

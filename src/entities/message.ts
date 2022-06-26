@@ -1,5 +1,5 @@
 import { MessageTypeEnum } from 'src/constants/message-enum';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { Conversation } from './conversation';
 import { User } from './user.entity';
 
@@ -22,7 +22,11 @@ export class Message {
   @ManyToOne(() => User, user => user.messages)
   fromUser: User;
 
+  @Column({type:String})
+  conversationId: string;
+
   @ManyToOne(() => Conversation, conversation => conversation.messages)
+  @JoinColumn({name: 'conversationId'})
   conversation: Conversation;
 
   @Column({

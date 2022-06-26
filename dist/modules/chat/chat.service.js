@@ -105,6 +105,37 @@ let ChatService = class ChatService {
         });
         return (0, format_pagination_1.formatPaginationResponse)([customConversations, conversationUserResponse[1]], formatQuery);
     }
+    async getConversationMessages(conversationId, query, userReq) {
+        const formatQuery = (0, format_pagination_1.FormatPaginationQuery)(query);
+        const conversation = await this.conversationRepository.createQueryBuilder('conversation')
+            .innerJoinAndSelect("conversation.conversationUsers", 'ConversationUser')
+            .select([
+            'conversation.id',
+            'ConversationUser.userId',
+        ])
+            .where('conversation.id = :conversationId', { conversationId })
+            .andWhere('ConversationUser.userId = :sub', { sub: userReq.sub })
+            .getOne();
+        if (!conversation)
+            throw new common_1.NotFoundException("Not found");
+        const messages = await this.messageRepository.createQueryBuilder('message')
+            .innerJoinAndSelect('message.fromUser', 'user')
+            .select([
+            'message.id',
+            'message.body',
+            'message.createdAt',
+            'message.updatedAt',
+            'message.type',
+            'user.id',
+            'user.firstName',
+            'user.lastName',
+            'user.image'
+        ])
+            .skip(formatQuery.offset)
+            .take(formatQuery.limit)
+            .getManyAndCount();
+        return (0, format_pagination_1.formatPaginationResponse)(messages, formatQuery);
+    }
 };
 ChatService = __decorate([
     (0, common_1.Injectable)(),
