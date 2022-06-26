@@ -41,6 +41,7 @@ let ChatGateway = class ChatGateway {
             var decoded = jwt.verify(data.token, constants_1.jwtConstants.secret);
             client.isAuth = true;
             client.sub = decoded.sub;
+            client.partnerSocketIds = [];
             this.userService.updateSocketId(decoded.sub, client.id);
             console.log("Socket Authenticated");
         }
@@ -51,15 +52,55 @@ let ChatGateway = class ChatGateway {
     }
     async clientEmitPrivateMessage(client, data) {
         if (client.isAuth) {
-            const socketIds = await this.conversationSerice.findSocketIdsFromConversationId(data.conversationId);
+            let toSocketIds = [];
+            if (client.partnerSocketIds.length === 0) {
+                toSocketIds = await this.conversationSerice.findSocketIdsFromConversationId(data.conversationId);
+                client.partnerSocketIds = [...toSocketIds];
+            }
+            else {
+                toSocketIds = [...client.partnerSocketIds];
+            }
             const now = new Date().toISOString();
-            this.server.to(socketIds).emit(socketEvent.SERVER_EMIT_PRIVATE_MESSAGE, Object.assign(Object.assign({}, data), { createdAt: now, updatedAt: now }));
+            this.server.to(toSocketIds).emit(socketEvent.SERVER_EMIT_PRIVATE_MESSAGE, Object.assign(Object.assign({}, data), { createdAt: now, updatedAt: now }));
             this.chatService.saveMessage({
                 body: data.body,
                 conversationId: data.conversationId,
                 fromUserId: client.sub,
                 type: data.type
             });
+            this.conversationSerice.updateLastMessage(data.conversationId, data.body);
+        }
+        else {
+            console.log("Status 401");
+        }
+    }
+    async clientEmitTyping(client, data) {
+        if (client.isAuth) {
+            let toSocketIds = [];
+            if (client.partnerSocketIds.length === 0) {
+                toSocketIds = await this.conversationSerice.findSocketIdsFromConversationId(data.conversationId);
+                client.partnerSocketIds = [...toSocketIds];
+            }
+            else {
+                toSocketIds = [...client.partnerSocketIds];
+            }
+            this.server.to(toSocketIds).emit(socketEvent.SERVER_EMIT_TYPING, '');
+        }
+        else {
+            console.log("Status 401");
+        }
+    }
+    async clientEmitNotTyping(client, data) {
+        if (client.isAuth) {
+            let toSocketIds = [];
+            if (client.partnerSocketIds.length === 0) {
+                toSocketIds = await this.conversationSerice.findSocketIdsFromConversationId(data.conversationId);
+                client.partnerSocketIds = [...toSocketIds];
+            }
+            else {
+                toSocketIds = [...client.partnerSocketIds];
+            }
+            this.server.to(toSocketIds).emit(socketEvent.SERVER_EMIT_NOT_TYPING, '');
         }
         else {
             console.log("Status 401");
@@ -94,6 +135,18 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], ChatGateway.prototype, "clientEmitPrivateMessage", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)(socketEvent.CLIENT_EMIT_TYPING),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], ChatGateway.prototype, "clientEmitTyping", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)(socketEvent.CLIENT_EMIT_NOT_TYPING),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], ChatGateway.prototype, "clientEmitNotTyping", null);
 ChatGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({
         cors: true

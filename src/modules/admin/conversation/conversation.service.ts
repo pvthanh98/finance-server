@@ -144,7 +144,7 @@ export class ConversationService {
 
 
     public async findSocketIdsFromConversationId(conversationId: string) {
-        console.log(conversationId)
+        console.log("QUERY DATABASE TO GET SOCKET IDS")
         const conversations = await this.conversationRepository
             .createQueryBuilder('conversation')
             .innerJoinAndSelect(

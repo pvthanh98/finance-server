@@ -7,6 +7,7 @@ import { AuthType } from "./types/socket-common";
 interface SocketAuth extends Socket {
     isAuth?: boolean;
     sub?: string;
+    partnerSocketIds?: string[];
 }
 export declare class ChatGateway {
     private chatService;
@@ -18,5 +19,7 @@ export declare class ChatGateway {
     handleMessage(client: Socket, data: MessageBroadcast): void;
     authenticate(client: SocketAuth, data: AuthType): void;
     clientEmitPrivateMessage(client: SocketAuth, data: MessagePrivate): Promise<void>;
+    clientEmitTyping(client: SocketAuth, data: any): Promise<void>;
+    clientEmitNotTyping(client: SocketAuth, data: any): Promise<void>;
 }
 export {};

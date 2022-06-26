@@ -19,6 +19,7 @@ const jwt = require('jsonwebtoken');
 interface SocketAuth extends Socket {
     isAuth?: boolean,
     sub?: string;
+    partnerSocketIds?: string[]
 }
 
 @WebSocketGateway({
@@ -60,6 +61,7 @@ export class ChatGateway {
             var decoded = jwt.verify(data.token, jwtConstants.secret);
             client.isAuth=true;
             client.sub=decoded.sub;
+            client.partnerSocketIds=[];
             this.userService.updateSocketId(decoded.sub, client.id)
             console.log("Socket Authenticated")
           } catch(err) {
@@ -73,9 +75,15 @@ export class ChatGateway {
     @SubscribeMessage(socketEvent.CLIENT_EMIT_PRIVATE_MESSAGE)
     async clientEmitPrivateMessage(client: SocketAuth, data: MessagePrivate) {
         if (client.isAuth){
-            const socketIds = await this.conversationSerice.findSocketIdsFromConversationId(data.conversationId)
+            let toSocketIds = [];
+            if(client.partnerSocketIds.length === 0){
+                toSocketIds = await this.conversationSerice.findSocketIdsFromConversationId(data.conversationId)
+                client.partnerSocketIds = [...toSocketIds]
+            } else {
+                toSocketIds = [...client.partnerSocketIds]
+            }
             const now = new Date().toISOString()
-            this.server.to(socketIds).emit(
+            this.server.to(toSocketIds).emit(
                 socketEvent.SERVER_EMIT_PRIVATE_MESSAGE,
                 {
                     ...data,
@@ -94,5 +102,40 @@ export class ChatGateway {
             console.log("Status 401")
         }
     }
+
+
+    @SubscribeMessage(socketEvent.CLIENT_EMIT_TYPING)
+    async clientEmitTyping(client: SocketAuth, data: any) {
+        if (client.isAuth){
+            let toSocketIds = [];
+            if(client.partnerSocketIds.length === 0){
+                toSocketIds = await this.conversationSerice.findSocketIdsFromConversationId(data.conversationId)
+                client.partnerSocketIds = [...toSocketIds]
+            } else {
+                toSocketIds = [...client.partnerSocketIds]
+            }
+            this.server.to(toSocketIds).emit(socketEvent.SERVER_EMIT_TYPING,'')
+        } else {
+            console.log("Status 401")
+        }
+    }
+
+    @SubscribeMessage(socketEvent.CLIENT_EMIT_NOT_TYPING)
+    async clientEmitNotTyping(client: SocketAuth, data: any) {
+        if (client.isAuth){
+            let toSocketIds = [];
+            if(client.partnerSocketIds.length === 0){
+                toSocketIds = await this.conversationSerice.findSocketIdsFromConversationId(data.conversationId)
+                client.partnerSocketIds = [...toSocketIds]
+            } else {
+                toSocketIds = [...client.partnerSocketIds]
+            }
+            this.server.to(toSocketIds).emit(socketEvent.SERVER_EMIT_NOT_TYPING,'')
+        } else {
+            console.log("Status 401")
+        }
+    }
+
+    
 
 }

@@ -124,7 +124,7 @@ let ConversationService = class ConversationService {
         }
     }
     async findSocketIdsFromConversationId(conversationId) {
-        console.log(conversationId);
+        console.log("QUERY DATABASE TO GET SOCKET IDS");
         const conversations = await this.conversationRepository
             .createQueryBuilder('conversation')
             .innerJoinAndSelect("conversation.conversationUsers", 'ConversationUser')
@@ -145,6 +145,11 @@ let ConversationService = class ConversationService {
             }
         }
         return socketIds;
+    }
+    updateLastMessage(conversationId, lastMessage) {
+        this.conversationRepository.update({
+            id: conversationId
+        }, { lastMessage });
     }
 };
 ConversationService = __decorate([
