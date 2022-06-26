@@ -7,6 +7,7 @@ import { Message } from 'src/entities/message';
 import { PaginationQueryType, UserPayload } from 'src/types/common.type';
 import { Repository } from 'typeorm';
 import { FormatPaginationQuery, formatPaginationResponse } from '../utils/format-pagination';
+import { FormatMessageOwner } from '../utils/message-format';
 import { PublicMessageDto } from './dto/message.dto';
 
 @Injectable()
@@ -165,7 +166,14 @@ export class ChatService {
             .take(formatQuery.limit)
             .getManyAndCount()
 
-        return formatPaginationResponse(messages, formatQuery)
-            
-    }
+        return formatPaginationResponse(
+            [
+                FormatMessageOwner(messages[0], userReq.sub),
+                messages[1]
+            ], 
+            formatQuery
+        )
+           
+    }    
+    
 }

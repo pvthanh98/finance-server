@@ -21,6 +21,7 @@ const conversation_user_1 = require("../../entities/conversation-user");
 const message_1 = require("../../entities/message");
 const typeorm_2 = require("typeorm");
 const format_pagination_1 = require("../utils/format-pagination");
+const message_format_1 = require("../utils/message-format");
 let ChatService = class ChatService {
     constructor(messageRepository, conversationRepository, conversationUserRepository) {
         this.messageRepository = messageRepository;
@@ -134,7 +135,10 @@ let ChatService = class ChatService {
             .skip(formatQuery.offset)
             .take(formatQuery.limit)
             .getManyAndCount();
-        return (0, format_pagination_1.formatPaginationResponse)(messages, formatQuery);
+        return (0, format_pagination_1.formatPaginationResponse)([
+            (0, message_format_1.FormatMessageOwner)(messages[0], userReq.sub),
+            messages[1]
+        ], formatQuery);
     }
 };
 ChatService = __decorate([
