@@ -25,7 +25,7 @@ export class User {
 
   @Column({
     type: String,
-    default: ''
+    default: 'https://tp-finance-server.herokuapp.com/static/default-profile-icon.jpg'
   })
   image: string;
 
