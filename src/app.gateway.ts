@@ -75,13 +75,7 @@ export class ChatGateway {
     @SubscribeMessage(socketEvent.CLIENT_EMIT_PRIVATE_MESSAGE)
     async clientEmitPrivateMessage(client: SocketAuth, data: MessagePrivate) {
         if (client.isAuth){
-            let toSocketIds = [];
-            if(client.partnerSocketIds.length === 0){
-                toSocketIds = await this.conversationSerice.findSocketIdsFromConversationId(data.conversationId)
-                client.partnerSocketIds = [...toSocketIds]
-            } else {
-                toSocketIds = [...client.partnerSocketIds]
-            }
+            const toSocketIds = await this.conversationSerice.findSocketIdsFromConversationId(data.conversationId)
             const now = new Date().toISOString()
             this.server.to(toSocketIds).emit(
                 socketEvent.SERVER_EMIT_PRIVATE_MESSAGE,
