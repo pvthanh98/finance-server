@@ -1,13 +1,17 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { PaginationQueryPipe } from 'src/pipes/pagination-query.pipe';
+import { PaginationQueryType, UserPayload } from 'src/types/common.type';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ChatService } from './chat.service';
-import { PublicMessageDto } from './dto/message.dto';
 
+@UseGuards(JwtAuthGuard)
 @Controller('chat')
 export class ChatController {
     constructor(private readonly chatService: ChatService){}
-    // @Post('public')
-    // sendPublicMessage (@Body() dto: PublicMessageDto){
-    //     return this.chatService.sendPublicMessage(dto);
-    // }
+
+    @Get('conversation')
+    getConversation(@Query(PaginationQueryPipe) query: PaginationQueryType, @Req() req: any){
+        return this.chatService.getConversation(query, req.user as UserPayload);
+    }
 
 }

@@ -7,9 +7,12 @@ export class ConversationUser {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => User, user => user.conversationUsers)
-  user: User;
+  @Column({ type: String })
+  userId: string;
 
+  @ManyToOne(() => User, user => user.conversationUsers)
+  @JoinColumn({ name: 'userId' })
+  user: User;
 
   @Column({ type: String })
   conversationId: string;

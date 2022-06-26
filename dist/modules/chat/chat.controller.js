@@ -8,16 +8,33 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChatController = void 0;
 const common_1 = require("@nestjs/common");
+const pagination_query_pipe_1 = require("../../pipes/pagination-query.pipe");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const chat_service_1 = require("./chat.service");
 let ChatController = class ChatController {
     constructor(chatService) {
         this.chatService = chatService;
     }
+    getConversation(query, req) {
+        return this.chatService.getConversation(query, req.user);
+    }
 };
+__decorate([
+    (0, common_1.Get)('conversation'),
+    __param(0, (0, common_1.Query)(pagination_query_pipe_1.PaginationQueryPipe)),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", void 0)
+], ChatController.prototype, "getConversation", null);
 ChatController = __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Controller)('chat'),
     __metadata("design:paramtypes", [chat_service_1.ChatService])
 ], ChatController);

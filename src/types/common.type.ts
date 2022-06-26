@@ -9,3 +9,9 @@ export type FormatPaginationType = {
     limit: number,
     offset:number,
 }
+
+export interface UserPayload {
+    email: string;
+    sub: string;
+    isAdmin: boolean
+}

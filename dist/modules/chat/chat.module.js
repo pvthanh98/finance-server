@@ -13,11 +13,12 @@ const chat_controller_1 = require("./chat.controller");
 const typeorm_1 = require("@nestjs/typeorm");
 const conversation_1 = require("../../entities/conversation");
 const message_1 = require("../../entities/message");
+const conversation_user_1 = require("../../entities/conversation-user");
 let ChatModule = class ChatModule {
 };
 ChatModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([conversation_1.Conversation, message_1.Message])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([conversation_1.Conversation, message_1.Message, conversation_user_1.ConversationUser])],
         providers: [chat_service_1.ChatService],
         controllers: [chat_controller_1.ChatController],
         exports: [chat_service_1.ChatService]

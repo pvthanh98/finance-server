@@ -17,13 +17,15 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const conversation_enum_1 = require("../../constants/conversation-enum");
 const conversation_1 = require("../../entities/conversation");
+const conversation_user_1 = require("../../entities/conversation-user");
 const message_1 = require("../../entities/message");
 const typeorm_2 = require("typeorm");
 const format_pagination_1 = require("../utils/format-pagination");
 let ChatService = class ChatService {
-    constructor(messageRepository, conversationRepository) {
+    constructor(messageRepository, conversationRepository, conversationUserRepository) {
         this.messageRepository = messageRepository;
         this.conversationRepository = conversationRepository;
+        this.conversationUserRepository = conversationUserRepository;
     }
     async getPublicMessage(query) {
         const { search } = query;
@@ -65,12 +67,52 @@ let ChatService = class ChatService {
             .values(Object.assign(Object.assign({}, dto), { conversation }))
             .execute();
     }
+    async getConversation(query, userReq) {
+        const formatQuery = (0, format_pagination_1.FormatPaginationQuery)(query);
+        const conversationUserResponse = await this.conversationUserRepository.findAndCount({
+            select: ['userId', 'id', 'conversationId'],
+            where: {
+                userId: userReq.sub
+            },
+            skip: formatQuery.offset,
+            take: formatQuery.limit,
+        });
+        const conversationIds = conversationUserResponse[0].map(conversationUser => conversationUser.conversationId);
+        const conversationQueryBuilder = await this.conversationRepository.createQueryBuilder('conversation');
+        const conversations = await conversationQueryBuilder
+            .innerJoinAndSelect("conversation.conversationUsers", 'ConversationUser')
+            .innerJoinAndSelect('ConversationUser.user', 'user')
+            .select([
+            'conversation',
+            'ConversationUser.id',
+            'user.firstName',
+            'user.lastName',
+            'user.id',
+            'user.image'
+        ])
+            .where('conversation.id IN (:...ids)', { ids: [...conversationIds] })
+            .getMany();
+        const customConversations = conversations.map(conv => {
+            const partners = conv.conversationUsers.filter(convUser => convUser.user.id === userReq.sub);
+            return {
+                id: conv.id,
+                lastMessage: conv.lastMessage,
+                isGroup: conv.isGroup,
+                createdAt: conv.createdAt,
+                updatedAt: conv.updatedAt,
+                partner: Object.assign({}, partners[0].user),
+            };
+        });
+        return (0, format_pagination_1.formatPaginationResponse)([customConversations, conversationUserResponse[1]], formatQuery);
+    }
 };
 ChatService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(message_1.Message)),
     __param(1, (0, typeorm_1.InjectRepository)(conversation_1.Conversation)),
+    __param(2, (0, typeorm_1.InjectRepository)(conversation_user_1.ConversationUser)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository])
 ], ChatService);
 exports.ChatService = ChatService;
