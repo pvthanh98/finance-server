@@ -110,7 +110,7 @@ export class ChatService {
             .getMany()
 
         const customConversations = conversations.map(conv => {
-            const partners = conv.conversationUsers.filter(convUser=> convUser.user.id === userReq.sub)
+            const partners = conv.conversationUsers.filter(convUser=> convUser.user.id !== userReq.sub)
             return {
                 id: conv.id,
                 lastMessage: conv.lastMessage,
