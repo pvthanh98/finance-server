@@ -123,6 +123,29 @@ let ConversationService = class ConversationService {
             return conversation.id;
         }
     }
+    async findSocketIdsFromConversationId(conversationId) {
+        console.log(conversationId);
+        const conversations = await this.conversationRepository
+            .createQueryBuilder('conversation')
+            .innerJoinAndSelect("conversation.conversationUsers", 'ConversationUser')
+            .innerJoinAndSelect('ConversationUser.user', 'user')
+            .select([
+            'conversation.id',
+            'ConversationUser.id',
+            'user.socketId',
+            'user.id',
+        ])
+            .where('conversation.id = :conversationId', { conversationId })
+            .getMany();
+        const socketIds = [];
+        for (const conv of conversations) {
+            for (const convUser of conv.conversationUsers) {
+                if (convUser.user.socketId)
+                    socketIds.push(convUser.user.socketId);
+            }
+        }
+        return socketIds;
+    }
 };
 ConversationService = __decorate([
     (0, common_1.Injectable)(),

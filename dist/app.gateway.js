@@ -14,10 +14,19 @@ const common_1 = require("@nestjs/common");
 const websockets_1 = require("@nestjs/websockets");
 const socket_io_1 = require("socket.io");
 const socketEvent = require("./constants/socket-event.constant");
+const conversation_service_1 = require("./modules/admin/conversation/conversation.service");
+const constants_1 = require("./modules/auth/constants");
 const chat_service_1 = require("./modules/chat/chat.service");
+const user_service_1 = require("./modules/user/user.service");
+const jwt = require('jsonwebtoken');
 let ChatGateway = class ChatGateway {
-    constructor(chatService) {
+    constructor(chatService, userService, conversationSerice) {
         this.chatService = chatService;
+        this.userService = userService;
+        this.conversationSerice = conversationSerice;
+    }
+    testEvent(client, data) {
+        console.log(client.isAuth);
     }
     handleMessage(client, data) {
         this.chatService.createPublicMessage({
@@ -27,23 +36,72 @@ let ChatGateway = class ChatGateway {
         });
         this.server.emit(socketEvent.SERVER_EMIT_BROADCAST_MESSAGE, Object.assign(Object.assign({}, data), { createdAt: new Date().toISOString() }));
     }
+    authenticate(client, data) {
+        try {
+            var decoded = jwt.verify(data.token, constants_1.jwtConstants.secret);
+            client.isAuth = true;
+            client.sub = decoded.sub;
+            this.userService.updateSocketId(decoded.sub, client.id);
+            console.log("Socket Authenticated");
+        }
+        catch (err) {
+            client.isAuth = false;
+            console.log("Socket Authentication Failed");
+        }
+    }
+    async clientEmitPrivateMessage(client, data) {
+        if (client.isAuth) {
+            const socketIds = await this.conversationSerice.findSocketIdsFromConversationId(data.conversationId);
+            const now = new Date().toISOString();
+            this.server.to(socketIds).emit(socketEvent.SERVER_EMIT_PRIVATE_MESSAGE, Object.assign(Object.assign({}, data), { createdAt: now, updatedAt: now }));
+            this.chatService.saveMessage({
+                body: data.body,
+                conversationId: data.conversationId,
+                fromUserId: client.sub,
+                type: data.type
+            });
+        }
+        else {
+            console.log("Status 401");
+        }
+    }
 };
 __decorate([
     (0, websockets_1.WebSocketServer)(),
     __metadata("design:type", socket_io_1.Server)
 ], ChatGateway.prototype, "server", void 0);
 __decorate([
+    (0, websockets_1.SubscribeMessage)(socketEvent.TEST_EVENT),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", void 0)
+], ChatGateway.prototype, "testEvent", null);
+__decorate([
     (0, websockets_1.SubscribeMessage)(socketEvent.CLIENT_EMIT_BROADCAST_MESSAGE),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
     __metadata("design:returntype", void 0)
 ], ChatGateway.prototype, "handleMessage", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)(socketEvent.CLIENT_EMIT_AUTH),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", void 0)
+], ChatGateway.prototype, "authenticate", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)(socketEvent.CLIENT_EMIT_PRIVATE_MESSAGE),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], ChatGateway.prototype, "clientEmitPrivateMessage", null);
 ChatGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({
         cors: true
     }),
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [chat_service_1.ChatService])
+    __metadata("design:paramtypes", [chat_service_1.ChatService,
+        user_service_1.UserService,
+        conversation_service_1.ConversationService])
 ], ChatGateway);
 exports.ChatGateway = ChatGateway;
 //# sourceMappingURL=app.gateway.js.map

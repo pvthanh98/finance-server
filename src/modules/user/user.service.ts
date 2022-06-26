@@ -156,7 +156,7 @@ export class UserService {
             .andWhere("friend.id = :id", { id: friendShipId })
             .andWhere("friend.status = :status", { status: FriendStatus.SEND_REQUEST })
             .getOne();
-        
+
         const user = await this.usersRepository.findOne({
             where: { id: userReq.sub }
         });
@@ -384,6 +384,15 @@ export class UserService {
             console.log("CHECKOUT POINT 19")
             return conversation.id;
         }
+    }
+
+    public async updateSocketId(userId: string, socketId: string) {
+        const user = await this.usersRepository.update({
+            id: userId
+        }, {
+            socketId
+        })
+        
     }
 
 

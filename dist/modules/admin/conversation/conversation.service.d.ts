@@ -24,4 +24,5 @@ export declare class ConversationService {
     deleteAllMessage(): Promise<void>;
     findConversationBetweenUsers(userId: string, friendId: string): Promise<string>;
     createSingleConversation(userId: string, friendId: string): Promise<string>;
+    findSocketIdsFromConversationId(conversationId: string): Promise<any[]>;
 }

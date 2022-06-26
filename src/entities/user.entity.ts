@@ -47,6 +47,12 @@ export class User {
   @OneToMany(()=> Message, message => message.fromUser)
   messages: Message[];
 
+  @Column({
+    type: String,
+    nullable:true,
+  })
+  socketId: string;
+
   @CreateDateColumn()
   createdAt: string;
 

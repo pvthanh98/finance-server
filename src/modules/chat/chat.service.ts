@@ -8,7 +8,7 @@ import { PaginationQueryType, UserPayload } from 'src/types/common.type';
 import { Repository } from 'typeorm';
 import { FormatPaginationQuery, formatPaginationResponse } from '../utils/format-pagination';
 import { FormatMessageOwner } from '../utils/message-format';
-import { PublicMessageDto } from './dto/message.dto';
+import { PrivateSocketMessageDto, PublicMessageDto } from './dto/message.dto';
 
 @Injectable()
 export class ChatService {
@@ -111,14 +111,14 @@ export class ChatService {
             .getMany()
 
         const customConversations = conversations.map(conv => {
-            const partners = conv.conversationUsers.filter(convUser=> convUser.user.id !== userReq.sub)
+            const partners = conv.conversationUsers.filter(convUser => convUser.user.id !== userReq.sub)
             return {
                 id: conv.id,
                 lastMessage: conv.lastMessage,
                 isGroup: conv.isGroup,
                 createdAt: conv.createdAt,
                 updatedAt: conv.updatedAt,
-                partner: {...partners[0].user},
+                partner: { ...partners[0].user },
             }
         })
 
@@ -131,7 +131,7 @@ export class ChatService {
     }
 
 
-    public async getConversationMessages(conversationId: string ,query: PaginationQueryType, userReq: UserPayload) {
+    public async getConversationMessages(conversationId: string, query: PaginationQueryType, userReq: UserPayload) {
         const formatQuery = FormatPaginationQuery(query)
 
         const conversation = await this.conversationRepository.createQueryBuilder('conversation')
@@ -146,7 +146,20 @@ export class ChatService {
             .where('conversation.id = :conversationId', { conversationId })
             .andWhere('ConversationUser.userId = :sub', { sub: userReq.sub })
             .getOne()
-    
+
+        console.log("-----------------------------");
+        console.log("-----------------------------");
+        console.log("-----------------------------");
+        console.log("-----------------------------");
+        console.log("-----------------------------");
+
+        console.log(conversation)
+
+        console.log("-----------------------------");
+        console.log("-----------------------------"); console.log("-----------------------------");
+        console.log("-----------------------------");
+        console.log("-----------------------------");
+
         if (!conversation) throw new NotFoundException("Not found");
 
         const messages = await this.messageRepository.createQueryBuilder('message')
@@ -165,15 +178,23 @@ export class ChatService {
             .skip(formatQuery.offset)
             .take(formatQuery.limit)
             .getManyAndCount()
+        return messages
 
         return formatPaginationResponse(
             [
                 FormatMessageOwner(messages[0], userReq.sub),
                 messages[1]
-            ], 
+            ],
             formatQuery
         )
-           
-    }    
-    
+
+    }
+
+
+    public async saveMessage(message: PrivateSocketMessageDto) {
+        const results = await this.messageRepository.insert({
+            ...message
+        })
+    }
+
 }

@@ -19,7 +19,12 @@ export class Message {
   })
   type: string; // text, image, video
 
+  
+  @Column({type:String})
+  fromUserId: string;
+
   @ManyToOne(() => User, user => user.messages)
+  @JoinColumn({name: 'fromUserId'})
   fromUser: User;
 
   @Column({type:String})

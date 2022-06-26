@@ -5,3 +5,9 @@ export declare class PublicMessageDto {
     guestId?: string;
     type?: MessageTypeEnum;
 }
+export declare class PrivateSocketMessageDto {
+    body: string;
+    type?: MessageTypeEnum;
+    fromUserId: string;
+    conversationId: string;
+}

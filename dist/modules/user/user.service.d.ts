@@ -51,4 +51,5 @@ export declare class UserService {
     findUserById(userId: string): Promise<User>;
     findConversationBetweenUsers(userId: string, friendId: string): Promise<string>;
     createSingleConversation(userId: string, friendId: string): Promise<string>;
+    updateSocketId(userId: string, socketId: string): Promise<void>;
 }

@@ -70,6 +70,13 @@ __decorate([
     __metadata("design:type", Array)
 ], User.prototype, "messages", void 0);
 __decorate([
+    (0, typeorm_1.Column)({
+        type: String,
+        nullable: true,
+    }),
+    __metadata("design:type", String)
+], User.prototype, "socketId", void 0);
+__decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", String)
 ], User.prototype, "createdAt", void 0);

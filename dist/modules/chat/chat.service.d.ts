@@ -3,7 +3,7 @@ import { ConversationUser } from 'src/entities/conversation-user';
 import { Message } from 'src/entities/message';
 import { PaginationQueryType, UserPayload } from 'src/types/common.type';
 import { Repository } from 'typeorm';
-import { PublicMessageDto } from './dto/message.dto';
+import { PrivateSocketMessageDto, PublicMessageDto } from './dto/message.dto';
 export declare class ChatService {
     private messageRepository;
     private conversationRepository;
@@ -22,10 +22,11 @@ export declare class ChatService {
         totalPage: number;
         result: any[];
     }>;
-    getConversationMessages(conversationId: string, query: PaginationQueryType, userReq: UserPayload): Promise<{
+    getConversationMessages(conversationId: string, query: PaginationQueryType, userReq: UserPayload): Promise<[Message[], number] | {
         currentPage: number;
         recordPerPage: number;
         totalPage: number;
         result: any[];
     }>;
+    saveMessage(message: PrivateSocketMessageDto): Promise<void>;
 }

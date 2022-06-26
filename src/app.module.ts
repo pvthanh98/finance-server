@@ -46,7 +46,7 @@ require("dotenv").config()
         Message
       ],
       synchronize: true,
-      logging: true
+      logging: false
     }),
     DashboardModule,
     SharedModulesModule,

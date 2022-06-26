@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PublicMessageDto = void 0;
+exports.PrivateSocketMessageDto = exports.PublicMessageDto = void 0;
 const class_validator_1 = require("class-validator");
 const message_enum_1 = require("../../../constants/message-enum");
 class PublicMessageDto {
@@ -38,4 +38,28 @@ __decorate([
     __metadata("design:type", String)
 ], PublicMessageDto.prototype, "type", void 0);
 exports.PublicMessageDto = PublicMessageDto;
+class PrivateSocketMessageDto {
+}
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], PrivateSocketMessageDto.prototype, "body", void 0);
+__decorate([
+    (0, class_validator_1.IsIn)([
+        message_enum_1.MessageTypeEnum.IMAGE,
+        message_enum_1.MessageTypeEnum.TEXT,
+        message_enum_1.MessageTypeEnum.VIDEO,
+    ]),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], PrivateSocketMessageDto.prototype, "type", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], PrivateSocketMessageDto.prototype, "fromUserId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], PrivateSocketMessageDto.prototype, "conversationId", void 0);
+exports.PrivateSocketMessageDto = PrivateSocketMessageDto;
 //# sourceMappingURL=message.dto.js.map

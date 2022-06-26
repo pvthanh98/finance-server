@@ -4,6 +4,7 @@ export declare class Message {
     id: string;
     body: string;
     type: string;
+    fromUserId: string;
     fromUser: User;
     conversationId: string;
     conversation: Conversation;

@@ -9,7 +9,7 @@ export declare class ChatController {
         totalPage: number;
         result: any[];
     }>;
-    getConversationMessages(id: string, query: PaginationQueryType, req: any): Promise<{
+    getConversationMessages(id: string, query: PaginationQueryType, req: any): Promise<[import("../../entities/message").Message[], number] | {
         currentPage: number;
         recordPerPage: number;
         totalPage: number;

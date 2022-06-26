@@ -13,12 +13,14 @@ export declare const FormatMessageOwner: (messages: Array<Message>, userId: any)
         friends: import("../../entities/friend.entity").Friend[];
         conversationUsers: import("../../entities/conversation-user").ConversationUser[];
         messages: Message[];
+        socketId: string;
         createdAt: string;
         updatedAt: string;
     };
     id: string;
     body: string;
     type: string;
+    fromUserId: string;
     conversationId: string;
     conversation: import("../../entities/conversation").Conversation;
     guestName: string;

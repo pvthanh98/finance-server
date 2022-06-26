@@ -21,3 +21,24 @@ export class PublicMessageDto {
     @IsOptional()
     type?: MessageTypeEnum;
 }
+
+
+
+export class PrivateSocketMessageDto {
+    @IsString()
+    body: string;
+
+    @IsIn([
+        MessageTypeEnum.IMAGE,
+        MessageTypeEnum.TEXT,
+        MessageTypeEnum.VIDEO,
+    ])
+    @IsOptional()
+    type?: MessageTypeEnum;
+
+    @IsString()
+    fromUserId: string;
+
+    @IsString()
+    conversationId: string;
+}

@@ -13,6 +13,7 @@ export declare class User {
     friends: Friend[];
     conversationUsers: ConversationUser[];
     messages: Message[];
+    socketId: string;
     createdAt: string;
     updatedAt: string;
 }

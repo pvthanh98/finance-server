@@ -321,6 +321,13 @@ let UserService = class UserService {
             return conversation.id;
         }
     }
+    async updateSocketId(userId, socketId) {
+        const user = await this.usersRepository.update({
+            id: userId
+        }, {
+            socketId
+        });
+    }
 };
 UserService = __decorate([
     (0, common_1.Injectable)(),
