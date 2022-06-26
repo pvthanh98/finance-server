@@ -1,9 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import {
-    ConnectedSocket,
-    MessageBody, SubscribeMessage,
+    SubscribeMessage,
     WebSocketGateway, WebSocketServer,
-    OnGatewayConnection
 
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
@@ -11,7 +9,6 @@ import { MessageTypeEnum } from "./constants/message-enum";
 import * as socketEvent from "./constants/socket-event.constant";
 import { ConversationService } from "./modules/admin/conversation/conversation.service";
 import { jwtConstants } from "./modules/auth/constants";
-import { JwtStrategy } from "./modules/auth/jwt.strategy";
 import { ChatService } from "./modules/chat/chat.service";
 import { UserService } from "./modules/user/user.service";
 import { MessageBroadcast, MessagePrivate } from "./types/message-socket";

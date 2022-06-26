@@ -57,7 +57,7 @@ AppModule = __decorate([
                     message_1.Message
                 ],
                 synchronize: true,
-                logging: true
+                logging: false
             }),
             dashboard_module_1.DashboardModule,
             shared_modules_module_1.SharedModulesModule,

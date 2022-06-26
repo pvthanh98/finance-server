@@ -147,19 +147,6 @@ export class ChatService {
             .andWhere('ConversationUser.userId = :sub', { sub: userReq.sub })
             .getOne()
 
-        console.log("-----------------------------");
-        console.log("-----------------------------");
-        console.log("-----------------------------");
-        console.log("-----------------------------");
-        console.log("-----------------------------");
-
-        console.log(conversation)
-
-        console.log("-----------------------------");
-        console.log("-----------------------------"); console.log("-----------------------------");
-        console.log("-----------------------------");
-        console.log("-----------------------------");
-
         if (!conversation) throw new NotFoundException("Not found");
 
         const messages = await this.messageRepository.createQueryBuilder('message')
@@ -169,16 +156,18 @@ export class ChatService {
                 'message.body',
                 'message.createdAt',
                 'message.updatedAt',
+                'message.conversationId',
                 'message.type',
                 'user.id',
                 'user.firstName',
                 'user.lastName',
                 'user.image'
             ])
+            .where('message.conversationId = :conversationId', {conversationId})
             .skip(formatQuery.offset)
             .take(formatQuery.limit)
+            .orderBy('message.createdAt', 'DESC')
             .getManyAndCount()
-        return messages
 
         return formatPaginationResponse(
             [

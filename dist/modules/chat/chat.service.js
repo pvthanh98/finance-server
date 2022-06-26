@@ -117,17 +117,6 @@ let ChatService = class ChatService {
             .where('conversation.id = :conversationId', { conversationId })
             .andWhere('ConversationUser.userId = :sub', { sub: userReq.sub })
             .getOne();
-        console.log("-----------------------------");
-        console.log("-----------------------------");
-        console.log("-----------------------------");
-        console.log("-----------------------------");
-        console.log("-----------------------------");
-        console.log(conversation);
-        console.log("-----------------------------");
-        console.log("-----------------------------");
-        console.log("-----------------------------");
-        console.log("-----------------------------");
-        console.log("-----------------------------");
         if (!conversation)
             throw new common_1.NotFoundException("Not found");
         const messages = await this.messageRepository.createQueryBuilder('message')
@@ -137,16 +126,18 @@ let ChatService = class ChatService {
             'message.body',
             'message.createdAt',
             'message.updatedAt',
+            'message.conversationId',
             'message.type',
             'user.id',
             'user.firstName',
             'user.lastName',
             'user.image'
         ])
+            .where('message.conversationId = :conversationId', { conversationId })
             .skip(formatQuery.offset)
             .take(formatQuery.limit)
+            .orderBy('message.createdAt', 'DESC')
             .getManyAndCount();
-        return messages;
         return (0, format_pagination_1.formatPaginationResponse)([
             (0, message_format_1.FormatMessageOwner)(messages[0], userReq.sub),
             messages[1]

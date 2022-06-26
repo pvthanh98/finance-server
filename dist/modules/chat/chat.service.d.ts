@@ -22,7 +22,7 @@ export declare class ChatService {
         totalPage: number;
         result: any[];
     }>;
-    getConversationMessages(conversationId: string, query: PaginationQueryType, userReq: UserPayload): Promise<[Message[], number] | {
+    getConversationMessages(conversationId: string, query: PaginationQueryType, userReq: UserPayload): Promise<{
         currentPage: number;
         recordPerPage: number;
         totalPage: number;
