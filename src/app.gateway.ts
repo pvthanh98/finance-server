@@ -38,7 +38,7 @@ export class ChatGateway {
 
     @SubscribeMessage(socketEvent.TEST_EVENT)
     testEvent(client: SocketAuth, data: any) {
-        console.log(client.isAuth)
+        console.log(client.isAuth) 
     }
 
     @SubscribeMessage(socketEvent.CLIENT_EMIT_BROADCAST_MESSAGE)
