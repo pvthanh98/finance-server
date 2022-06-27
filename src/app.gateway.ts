@@ -41,18 +41,18 @@ export class ChatGateway {
         console.log(client.isAuth) 
     }
 
-    @SubscribeMessage(socketEvent.CLIENT_EMIT_BROADCAST_MESSAGE)
-    handleMessage(client: Socket, data: MessageBroadcast): void {
-        this.chatService.createPublicMessage({
-            body: data.body,
-            guestName: data.user.name,
-            guestId: data.user.id
-        })
-        this.server.emit(socketEvent.SERVER_EMIT_BROADCAST_MESSAGE, {
-            ...data,
-            createdAt: new Date().toISOString()
-        })
-    }
+    // @SubscribeMessage(socketEvent.CLIENT_EMIT_BROADCAST_MESSAGE)
+    // handleMessage(client: Socket, data: MessageBroadcast): void {
+    //     this.chatService.createPublicMessage({
+    //         body: data.body,
+    //         guestName: data.user.name,
+    //         guestId: data.user.id
+    //     })
+    //     this.server.emit(socketEvent.SERVER_EMIT_BROADCAST_MESSAGE, {
+    //         ...data,
+    //         createdAt: new Date().toISOString()
+    //     })
+    // }
 
 
     @SubscribeMessage(socketEvent.CLIENT_EMIT_AUTH)
