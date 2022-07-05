@@ -28,14 +28,6 @@ let ChatGateway = class ChatGateway {
     testEvent(client, data) {
         console.log(client.isAuth);
     }
-    handleMessage(client, data) {
-        this.chatService.createPublicMessage({
-            body: data.body,
-            guestName: data.user.name,
-            guestId: data.user.id
-        });
-        this.server.emit(socketEvent.SERVER_EMIT_BROADCAST_MESSAGE, Object.assign(Object.assign({}, data), { createdAt: new Date().toISOString() }));
-    }
     authenticate(client, data) {
         try {
             var decoded = jwt.verify(data.token, constants_1.jwtConstants.secret);
@@ -52,14 +44,7 @@ let ChatGateway = class ChatGateway {
     }
     async clientEmitPrivateMessage(client, data) {
         if (client.isAuth) {
-            let toSocketIds = [];
-            if (client.partnerSocketIds.length === 0) {
-                toSocketIds = await this.conversationSerice.findSocketIdsFromConversationId(data.conversationId);
-                client.partnerSocketIds = [...toSocketIds];
-            }
-            else {
-                toSocketIds = [...client.partnerSocketIds];
-            }
+            const toSocketIds = await this.conversationSerice.findSocketIdsFromConversationId(data.conversationId);
             const now = new Date().toISOString();
             this.server.to(toSocketIds).emit(socketEvent.SERVER_EMIT_PRIVATE_MESSAGE, Object.assign(Object.assign({}, data), { createdAt: now, updatedAt: now }));
             this.chatService.saveMessage({
@@ -84,7 +69,7 @@ let ChatGateway = class ChatGateway {
             else {
                 toSocketIds = [...client.partnerSocketIds];
             }
-            this.server.to(toSocketIds).emit(socketEvent.SERVER_EMIT_TYPING, '');
+            this.server.to(toSocketIds).emit(socketEvent.SERVER_EMIT_TYPING, Object.assign({}, data));
         }
         else {
             console.log("Status 401");
@@ -100,7 +85,7 @@ let ChatGateway = class ChatGateway {
             else {
                 toSocketIds = [...client.partnerSocketIds];
             }
-            this.server.to(toSocketIds).emit(socketEvent.SERVER_EMIT_NOT_TYPING, '');
+            this.server.to(toSocketIds).emit(socketEvent.SERVER_EMIT_NOT_TYPING, Object.assign({}, data));
         }
         else {
             console.log("Status 401");
@@ -117,12 +102,6 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], ChatGateway.prototype, "testEvent", null);
-__decorate([
-    (0, websockets_1.SubscribeMessage)(socketEvent.CLIENT_EMIT_BROADCAST_MESSAGE),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
-    __metadata("design:returntype", void 0)
-], ChatGateway.prototype, "handleMessage", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)(socketEvent.CLIENT_EMIT_AUTH),
     __metadata("design:type", Function),
