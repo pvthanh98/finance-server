@@ -16,7 +16,7 @@ export class TasksService {
     ) { }
     private readonly logger = new Logger(TasksService.name);
 
-    @Cron('0 15 * * *')
+    @Cron('0 16 * * *')
     async handleCron() {
         const expenses = await this.ggSheetService.getDailyExpense();
         this.emailService.sendEmail({
