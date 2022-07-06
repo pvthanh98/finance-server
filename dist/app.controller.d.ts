@@ -8,5 +8,6 @@ export declare class AppController {
     getHello(req: Request): Promise<string>;
     login(req: any): Promise<{
         access_token: string;
+        isAdmin: any;
     }>;
 }

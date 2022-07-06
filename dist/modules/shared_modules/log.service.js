@@ -33,7 +33,6 @@ let LogService = class LogService {
         await this.logRepo.save(logContent);
         var d = new Date();
         d.setDate(d.getDate() - 7);
-        console.log(d);
         this.logRepo.delete({
             createdAt: (0, typeorm_2.LessThan)(d.toISOString()),
             type: common_constant_1.LogType.PING

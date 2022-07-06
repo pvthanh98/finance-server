@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessageType } from 'src/types/email.type';
+import { dailyEmailTemplate } from './email-templates/dailly-email-template';
 import { emailTemplate } from './email-templates/email-template';
 const sgMail = require('@sendgrid/mail')
 
@@ -16,6 +17,28 @@ export class EmailService {
             subject: message.subject,
             text: message.body,
             html: emailTemplate(message.title ,message.body, message.expenses),
+        }
+        sgMail
+            .send(msg)
+            .then(() => {
+                console.log('Email sent')
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+
+        return {
+            status: true
+        }
+    }
+
+    async sendEmail (message: MessageType){
+        const msg = {
+            to: message.to,
+            from: 'TP Site<thanhphan.gg@gmail.com>',
+            subject: message.subject,
+            text: message.body,
+            html: dailyEmailTemplate(message.title ,message.body, message.expenses),
         }
         sgMail
             .send(msg)

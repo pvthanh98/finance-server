@@ -21,6 +21,7 @@ import { ConversationUser } from './entities/conversation-user';
 import { Message } from './entities/message';
 import { ConversationModule } from './modules/admin/conversation/conversation.module';
 import { ChatModule } from './modules/chat/chat.module';
+import { DashboardService } from './modules/dashboard/dashboard.service';
 require("dotenv").config()
 
 @Module({

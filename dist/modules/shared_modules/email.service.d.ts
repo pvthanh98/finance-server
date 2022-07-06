@@ -6,4 +6,7 @@ export declare class EmailService {
     sendExpenseAddedMail(message: MessageType): Promise<{
         status: boolean;
     }>;
+    sendEmail(message: MessageType): Promise<{
+        status: boolean;
+    }>;
 }
