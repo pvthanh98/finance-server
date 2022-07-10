@@ -52,7 +52,7 @@ let UploadService = class UploadService {
         try {
             const response = await this.uploadS3(file.buffer, extension);
             return {
-                url: response.Location
+                key: response.key
             };
         }
         catch (e) {

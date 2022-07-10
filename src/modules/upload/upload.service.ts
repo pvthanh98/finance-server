@@ -44,7 +44,7 @@ export class UploadService {
         try {
             const response: any = await this.uploadS3(file.buffer, extension);
             return {
-                url: response.Location
+                key: response.key
             };
         } catch (e) {
             throw new BadRequestException({ message: e.message })

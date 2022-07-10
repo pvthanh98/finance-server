@@ -5,7 +5,7 @@ export declare class UploadController {
     private uploadService;
     constructor(uploadService: UploadService);
     uploadFile(file: Express.Multer.File): Promise<{
-        url: any;
+        key: any;
     }>;
     getObject(dto: SignUrlDto): Promise<any>;
 }

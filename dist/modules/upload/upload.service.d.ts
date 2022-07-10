@@ -4,7 +4,7 @@ export declare class UploadService {
     constructor();
     private uploadS3;
     upload(file: any): Promise<{
-        url: any;
+        key: any;
     }>;
     signedUrl(dto: SignUrlDto): Promise<any>;
 }
