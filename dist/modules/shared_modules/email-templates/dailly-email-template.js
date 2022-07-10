@@ -18,7 +18,6 @@ function renderSummary(expenses) {
     expenses.forEach(expense => {
         sum += expense.amount;
     });
-    console.log({ sum });
     return `
                 <p class="overview">
                     Total: ${sum}
@@ -43,6 +42,8 @@ const dailyEmailTemplate = (title, body, expenses) => {
 
         .overview {
             text-align: right;
+            color: red;
+            font-weight: bold;
         }
 
         #customers {

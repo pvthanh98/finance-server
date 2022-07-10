@@ -30,6 +30,7 @@ const conversation_user_1 = require("./entities/conversation-user");
 const message_1 = require("./entities/message");
 const conversation_module_1 = require("./modules/admin/conversation/conversation.module");
 const chat_module_1 = require("./modules/chat/chat.module");
+const upload_module_1 = require("./modules/upload/upload.module");
 require("dotenv").config();
 let AppModule = class AppModule {
 };
@@ -65,7 +66,8 @@ AppModule = __decorate([
             user_module_1.UserModule,
             common_module_1.CommonModule,
             conversation_module_1.ConversationModule,
-            chat_module_1.ChatModule
+            chat_module_1.ChatModule,
+            upload_module_1.UploadModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, tasks_service_1.TasksService, app_gateway_1.ChatGateway],

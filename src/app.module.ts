@@ -22,6 +22,7 @@ import { Message } from './entities/message';
 import { ConversationModule } from './modules/admin/conversation/conversation.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { DashboardService } from './modules/dashboard/dashboard.service';
+import { UploadModule } from './modules/upload/upload.module';
 require("dotenv").config()
 
 @Module({
@@ -55,7 +56,8 @@ require("dotenv").config()
     UserModule,
     CommonModule,
     ConversationModule,
-    ChatModule
+    ChatModule,
+    UploadModule
   ],
   controllers: [AppController],
   providers: [AppService, TasksService, ChatGateway],

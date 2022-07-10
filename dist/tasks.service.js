@@ -36,7 +36,7 @@ let TasksService = TasksService_1 = class TasksService {
     }
 };
 __decorate([
-    (0, schedule_1.Cron)('*/10 * * * * *'),
+    (0, schedule_1.Cron)('0 16 * * *'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
