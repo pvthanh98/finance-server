@@ -16,6 +16,7 @@ const user_controller_1 = require("./user.controller");
 const friend_entity_1 = require("../../entities/friend.entity");
 const conversation_1 = require("../../entities/conversation");
 const conversation_user_1 = require("../../entities/conversation-user");
+const s3_service_1 = require("../shared_modules/s3.service");
 let UserModule = class UserModule {
 };
 UserModule = __decorate([
@@ -24,7 +25,7 @@ UserModule = __decorate([
             typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, friend_entity_1.Friend, conversation_1.Conversation, conversation_user_1.ConversationUser]),
             config_1.ConfigModule
         ],
-        providers: [user_service_1.UserService],
+        providers: [user_service_1.UserService, s3_service_1.S3Service],
         exports: [user_service_1.UserService],
         controllers: [user_controller_1.UserController]
     })

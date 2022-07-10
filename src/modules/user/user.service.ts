@@ -9,6 +9,7 @@ import { User } from 'src/entities/user.entity';
 import { PaginationQueryType } from 'src/types/common.type';
 import { Repository } from 'typeorm';
 import { ConversationService } from '../admin/conversation/conversation.service';
+import { S3Service } from '../shared_modules/s3.service';
 import { FormatPaginationQuery, formatPaginationResponse } from '../utils/format-pagination';
 import { UnAndAddFriendDto } from './dto/add-friend.dto';
 import { HandleFriendRequestDto } from './dto/handle-friend.dto';
@@ -28,6 +29,7 @@ export class UserService {
         private conversationRepository: Repository<Conversation>,
         @InjectRepository(ConversationUser)
         private conversationUserRepository: Repository<ConversationUser>,
+        private s3Service: S3Service
     ) { }
 
     async getProfile(userId: string) {
@@ -36,7 +38,10 @@ export class UserService {
                 id: userId
             }
         });
-        return userProifle;
+        return {
+            ...userProifle,
+            image: await this.s3Service.signedUrl({key: userProifle.image})
+        };
     }
 
     async updateProfile(updateProfileDto: UpdateProfileDto, userId: string) {
@@ -49,7 +54,10 @@ export class UserService {
                 id: userId
             }
         });
-        return user;
+        return {
+            ...user,
+            image: await this.s3Service.signedUrl({key: user.image})
+        };
     }
 
     async registerUser(userDto: CreateUserDto): Promise<UserRegisterResponse> {

@@ -12,8 +12,38 @@ export declare class UserController {
         totalPage: number;
         result: any[];
     }>;
-    getProfile(req: any): Promise<import("../../entities/user.entity").User>;
-    updateProfile(updateProfileDto: UpdateProfileDto, req: any): Promise<import("../../entities/user.entity").User>;
+    getProfile(req: any): Promise<{
+        image: any;
+        id: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+        isActive: boolean;
+        isAdmin: boolean;
+        password: string;
+        friends: import("../../entities/friend.entity").Friend[];
+        conversationUsers: import("../../entities/conversation-user").ConversationUser[];
+        messages: import("../../entities/message").Message[];
+        socketId: string;
+        createdAt: string;
+        updatedAt: string;
+    }>;
+    updateProfile(updateProfileDto: UpdateProfileDto, req: any): Promise<{
+        image: any;
+        id: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+        isActive: boolean;
+        isAdmin: boolean;
+        password: string;
+        friends: import("../../entities/friend.entity").Friend[];
+        conversationUsers: import("../../entities/conversation-user").ConversationUser[];
+        messages: import("../../entities/message").Message[];
+        socketId: string;
+        createdAt: string;
+        updatedAt: string;
+    }>;
     addFriend(friendDto: UnAndAddFriendDto, req: any): Promise<{
         status: boolean;
     }>;

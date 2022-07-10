@@ -4,7 +4,6 @@ import { random } from '../../utils/random.util';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { SignUrlDto } from './upload.dto';
 import { UploadService } from './upload.service';
-const AWS = require('aws-sdk');
 
 @UseGuards(JwtAuthGuard)
 @Controller('upload')

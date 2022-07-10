@@ -21,14 +21,16 @@ const conversation_user_1 = require("../../entities/conversation-user");
 const friend_entity_1 = require("../../entities/friend.entity");
 const user_entity_1 = require("../../entities/user.entity");
 const typeorm_2 = require("typeorm");
+const s3_service_1 = require("../shared_modules/s3.service");
 const format_pagination_1 = require("../utils/format-pagination");
 const bcrypt = require('bcryptjs');
 let UserService = class UserService {
-    constructor(usersRepository, friendRepository, conversationRepository, conversationUserRepository) {
+    constructor(usersRepository, friendRepository, conversationRepository, conversationUserRepository, s3Service) {
         this.usersRepository = usersRepository;
         this.friendRepository = friendRepository;
         this.conversationRepository = conversationRepository;
         this.conversationUserRepository = conversationUserRepository;
+        this.s3Service = s3Service;
     }
     async getProfile(userId) {
         const userProifle = await this.usersRepository.findOne({
@@ -36,7 +38,7 @@ let UserService = class UserService {
                 id: userId
             }
         });
-        return userProifle;
+        return Object.assign(Object.assign({}, userProifle), { image: await this.s3Service.signedUrl({ key: userProifle.image }) });
     }
     async updateProfile(updateProfileDto, userId) {
         await this.usersRepository.update({ id: userId }, Object.assign({}, updateProfileDto));
@@ -45,7 +47,7 @@ let UserService = class UserService {
                 id: userId
             }
         });
-        return user;
+        return Object.assign(Object.assign({}, user), { image: await this.s3Service.signedUrl({ key: user.image }) });
     }
     async registerUser(userDto) {
         const salt = bcrypt.genSaltSync(9);
@@ -338,7 +340,8 @@ UserService = __decorate([
     __metadata("design:paramtypes", [typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,
-        typeorm_2.Repository])
+        typeorm_2.Repository,
+        s3_service_1.S3Service])
 ], UserService);
 exports.UserService = UserService;
 //# sourceMappingURL=user.service.js.map

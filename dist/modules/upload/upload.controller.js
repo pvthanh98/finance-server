@@ -18,7 +18,6 @@ const platform_express_1 = require("@nestjs/platform-express");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const upload_dto_1 = require("./upload.dto");
 const upload_service_1 = require("./upload.service");
-const AWS = require('aws-sdk');
 let UploadController = class UploadController {
     constructor(uploadService) {
         this.uploadService = uploadService;

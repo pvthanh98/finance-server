@@ -14,6 +14,7 @@ const log_entity_1 = require("../../entities/log.entity");
 const email_service_1 = require("./email.service");
 const google_sheet_service_1 = require("./google_sheet.service");
 const log_service_1 = require("./log.service");
+const s3_service_1 = require("./s3.service");
 const shared_modules_service_1 = require("./shared_modules.service");
 let SharedModulesModule = class SharedModulesModule {
 };
@@ -27,12 +28,14 @@ SharedModulesModule = __decorate([
             shared_modules_service_1.SharedModulesService,
             google_sheet_service_1.GoogleSheetService,
             log_service_1.LogService,
-            email_service_1.EmailService
+            email_service_1.EmailService,
+            s3_service_1.S3Service
         ],
         exports: [
             google_sheet_service_1.GoogleSheetService,
             log_service_1.LogService,
-            email_service_1.EmailService
+            email_service_1.EmailService,
+            s3_service_1.S3Service
         ]
     })
 ], SharedModulesModule);

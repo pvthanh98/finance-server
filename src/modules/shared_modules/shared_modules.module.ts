@@ -5,6 +5,7 @@ import { Log } from 'src/entities/log.entity';
 import { EmailService } from './email.service';
 import { GoogleSheetService } from './google_sheet.service';
 import { LogService } from './log.service';
+import { S3Service } from './s3.service';
 import { SharedModulesService } from './shared_modules.service';
 
 @Module({
@@ -16,12 +17,14 @@ import { SharedModulesService } from './shared_modules.service';
     SharedModulesService,
     GoogleSheetService,
     LogService,
-    EmailService
+    EmailService,
+    S3Service
   ],
   exports:[
     GoogleSheetService,
     LogService,
-    EmailService
+    EmailService,
+    S3Service
   ]
 })
 export class SharedModulesModule { }
