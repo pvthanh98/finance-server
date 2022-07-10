@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const typeorm_1 = require("typeorm");
+const auth_entity_1 = require("./auth.entity");
 const conversation_user_1 = require("./conversation-user");
 const friend_entity_1 = require("./friend.entity");
 const message_1 = require("./message");
@@ -69,6 +70,10 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => message_1.Message, message => message.fromUser),
     __metadata("design:type", Array)
 ], User.prototype, "messages", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => auth_entity_1.Auth, auth => auth.user),
+    __metadata("design:type", Array)
+], User.prototype, "auth", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         type: String,

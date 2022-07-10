@@ -1,12 +1,16 @@
+import { Auth } from 'src/entities/auth.entity';
 import { Conversation } from 'src/entities/conversation';
 import { ConversationUser } from 'src/entities/conversation-user';
 import { Friend } from 'src/entities/friend.entity';
 import { User } from 'src/entities/user.entity';
 import { PaginationQueryType } from 'src/types/common.type';
 import { Repository } from 'typeorm';
+import { EmailService } from '../shared_modules/email.service';
 import { S3Service } from '../shared_modules/s3.service';
 import { UnAndAddFriendDto } from './dto/add-friend.dto';
+import { ForgotPasswordDto } from './dto/forgotpassword.dto';
 import { HandleFriendRequestDto } from './dto/handle-friend.dto';
+import { ResetPasswordDto } from './dto/reset.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { CreateUserDto } from './dto/user.register';
 import { UserRegisterResponse } from './type/user-register.response';
@@ -15,8 +19,10 @@ export declare class UserService {
     private friendRepository;
     private conversationRepository;
     private conversationUserRepository;
+    private authsRepository;
     private s3Service;
-    constructor(usersRepository: Repository<User>, friendRepository: Repository<Friend>, conversationRepository: Repository<Conversation>, conversationUserRepository: Repository<ConversationUser>, s3Service: S3Service);
+    private emailService;
+    constructor(usersRepository: Repository<User>, friendRepository: Repository<Friend>, conversationRepository: Repository<Conversation>, conversationUserRepository: Repository<ConversationUser>, authsRepository: Repository<Auth>, s3Service: S3Service, emailService: EmailService);
     getProfile(userId: string): Promise<{
         image: any;
         id: string;
@@ -29,6 +35,7 @@ export declare class UserService {
         friends: Friend[];
         conversationUsers: ConversationUser[];
         messages: import("../../entities/message").Message[];
+        auth: Auth[];
         socketId: string;
         createdAt: string;
         updatedAt: string;
@@ -45,11 +52,18 @@ export declare class UserService {
         friends: Friend[];
         conversationUsers: ConversationUser[];
         messages: import("../../entities/message").Message[];
+        auth: Auth[];
         socketId: string;
         createdAt: string;
         updatedAt: string;
     }>;
     registerUser(userDto: CreateUserDto): Promise<UserRegisterResponse>;
+    forgotPassword(dto: ForgotPasswordDto): Promise<{
+        code: string;
+    }>;
+    resetPassword(dto: ResetPasswordDto): Promise<{
+        status: boolean;
+    }>;
     findByEmail(email: string): Promise<User>;
     findAll(query: PaginationQueryType): Promise<{
         currentPage: number;

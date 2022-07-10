@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Auth } from './auth.entity';
 import { ConversationUser } from './conversation-user';
 import { Friend } from './friend.entity';
 import { Message } from './message';
@@ -46,6 +47,9 @@ export class User {
 
   @OneToMany(()=> Message, message => message.fromUser)
   messages: Message[];
+
+  @OneToMany(()=> Auth, auth => auth.user)
+  auth: Auth[];
 
   @Column({
     type: String,

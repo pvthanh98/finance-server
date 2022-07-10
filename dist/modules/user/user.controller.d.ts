@@ -24,6 +24,7 @@ export declare class UserController {
         friends: import("../../entities/friend.entity").Friend[];
         conversationUsers: import("../../entities/conversation-user").ConversationUser[];
         messages: import("../../entities/message").Message[];
+        auth: import("../../entities/auth.entity").Auth[];
         socketId: string;
         createdAt: string;
         updatedAt: string;
@@ -40,6 +41,7 @@ export declare class UserController {
         friends: import("../../entities/friend.entity").Friend[];
         conversationUsers: import("../../entities/conversation-user").ConversationUser[];
         messages: import("../../entities/message").Message[];
+        auth: import("../../entities/auth.entity").Auth[];
         socketId: string;
         createdAt: string;
         updatedAt: string;

@@ -16,21 +16,27 @@ exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const friend_constant_1 = require("../../constants/friend.constant");
+const auth_entity_1 = require("../../entities/auth.entity");
 const conversation_1 = require("../../entities/conversation");
 const conversation_user_1 = require("../../entities/conversation-user");
 const friend_entity_1 = require("../../entities/friend.entity");
 const user_entity_1 = require("../../entities/user.entity");
+const random_util_1 = require("../../utils/random.util");
+const time_util_1 = require("../../utils/time.util");
 const typeorm_2 = require("typeorm");
+const email_service_1 = require("../shared_modules/email.service");
 const s3_service_1 = require("../shared_modules/s3.service");
 const format_pagination_1 = require("../utils/format-pagination");
 const bcrypt = require('bcryptjs');
 let UserService = class UserService {
-    constructor(usersRepository, friendRepository, conversationRepository, conversationUserRepository, s3Service) {
+    constructor(usersRepository, friendRepository, conversationRepository, conversationUserRepository, authsRepository, s3Service, emailService) {
         this.usersRepository = usersRepository;
         this.friendRepository = friendRepository;
         this.conversationRepository = conversationRepository;
         this.conversationUserRepository = conversationUserRepository;
+        this.authsRepository = authsRepository;
         this.s3Service = s3Service;
+        this.emailService = emailService;
     }
     async getProfile(userId) {
         const userProifle = await this.usersRepository.findOne({
@@ -58,6 +64,56 @@ let UserService = class UserService {
             id: user.id,
             firstName: user.firstName,
             lastName: user.lastName
+        };
+    }
+    async forgotPassword(dto) {
+        const user = await this.usersRepository.findOne({
+            where: {
+                email: dto.email
+            }
+        });
+        const code = (0, random_util_1.random)(6);
+        if (!user)
+            throw new common_1.NotFoundException({ message: 'Email not found' });
+        const generatedCode = await this.authsRepository.create({
+            code: code,
+            userId: user.id
+        });
+        await this.authsRepository.save(generatedCode);
+        this.emailService.sendMail({
+            subject: 'TP Site Forgot password',
+            title: 'Hi! Here is your code',
+            body: `Code: ${code}`,
+            to: dto.email
+        });
+        return {
+            code
+        };
+    }
+    async resetPassword(dto) {
+        const user = await this.usersRepository.findOne({
+            where: {
+                email: dto.email
+            }
+        });
+        if (!user)
+            throw new common_1.BadRequestException({ message: 'Email not found' });
+        const auth = await this.authsRepository.findOne({
+            where: {
+                userId: user.id
+            }
+        });
+        if (!auth)
+            throw new common_1.BadRequestException({ message: 'Wrong code' });
+        console.log(auth.createdAt);
+        if ((0, time_util_1.isExpired)(auth.createdAt, 30))
+            throw new common_1.BadRequestException({ message: 'Code Expire' });
+        const salt = bcrypt.genSaltSync(9);
+        const password = bcrypt.hashSync(`${dto.password}`, salt);
+        user.password = password;
+        await this.usersRepository.save(user);
+        return {
+            status: true
         };
     }
     async findByEmail(email) {
@@ -337,11 +393,14 @@ UserService = __decorate([
     __param(1, (0, typeorm_1.InjectRepository)(friend_entity_1.Friend)),
     __param(2, (0, typeorm_1.InjectRepository)(conversation_1.Conversation)),
     __param(3, (0, typeorm_1.InjectRepository)(conversation_user_1.ConversationUser)),
+    __param(4, (0, typeorm_1.InjectRepository)(auth_entity_1.Auth)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,
-        s3_service_1.S3Service])
+        typeorm_2.Repository,
+        s3_service_1.S3Service,
+        email_service_1.EmailService])
 ], UserService);
 exports.UserService = UserService;
 //# sourceMappingURL=user.service.js.map

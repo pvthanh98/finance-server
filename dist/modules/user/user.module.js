@@ -17,15 +17,17 @@ const friend_entity_1 = require("../../entities/friend.entity");
 const conversation_1 = require("../../entities/conversation");
 const conversation_user_1 = require("../../entities/conversation-user");
 const s3_service_1 = require("../shared_modules/s3.service");
+const auth_entity_1 = require("../../entities/auth.entity");
+const email_service_1 = require("../shared_modules/email.service");
 let UserModule = class UserModule {
 };
 UserModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, friend_entity_1.Friend, conversation_1.Conversation, conversation_user_1.ConversationUser]),
+            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, friend_entity_1.Friend, conversation_1.Conversation, conversation_user_1.ConversationUser, auth_entity_1.Auth]),
             config_1.ConfigModule
         ],
-        providers: [user_service_1.UserService, s3_service_1.S3Service],
+        providers: [user_service_1.UserService, s3_service_1.S3Service, email_service_1.EmailService],
         exports: [user_service_1.UserService],
         controllers: [user_controller_1.UserController]
     })

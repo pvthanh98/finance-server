@@ -63,7 +63,7 @@ export const expenseAddedEmailTemplate = (title, body) => {
                         Thank you!
                     </p>
                     <p>
-                        Go to <a href="https://pvthanh98.github.com">Tp Site</a>
+                        Go to <a href="https://pvthanh98.github.io">Tp Site</a>
                     </p>
                 </div>
             </div>

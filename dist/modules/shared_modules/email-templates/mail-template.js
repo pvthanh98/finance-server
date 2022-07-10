@@ -1,30 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.dailyEmailTemplate = void 0;
-function renderRow(expenses) {
-    return expenses.map(expense => {
-        return `
-                <tr>
-                    <td>${expense.date}</td>
-                    <td>${expense.category}</td>
-                    <td>${expense.amount}</td>
-                    <td>${expense.description}</td>
-                </tr>
-        `;
-    }).join("");
-}
-function renderSummary(expenses) {
-    let sum = 0;
-    expenses.forEach(expense => {
-        sum += expense.amount;
-    });
-    return `
-                <p class="overview">
-                    Total: ${sum}
-                </p>
-            `;
-}
-const dailyEmailTemplate = (title, body, expenses) => {
+exports.MailTemplate = void 0;
+const MailTemplate = (title, body) => {
     return `
     <!DOCTYPE html>
 <html lang="en">
@@ -38,12 +15,6 @@ const dailyEmailTemplate = (title, body, expenses) => {
         .body {
             display: flex;
             justify-content: center;
-        }
-
-        .overview {
-            text-align: right;
-            color: red;
-            font-weight: bold;
         }
 
         #customers {
@@ -85,16 +56,6 @@ const dailyEmailTemplate = (title, body, expenses) => {
             <p>
                 ${body}
             </p>
-            <table id="customers">
-                <tr>
-                    <th>Date</th>
-                    <th>Category</th>
-                    <th>Amount</th>
-                    <th>Description</th>
-                </tr>
-                ${renderRow(expenses)}
-            </table>
-            ${renderSummary(expenses)}
             <p>
                 Thank you!
             </p>
@@ -108,5 +69,5 @@ const dailyEmailTemplate = (title, body, expenses) => {
 </html>
     `;
 };
-exports.dailyEmailTemplate = dailyEmailTemplate;
-//# sourceMappingURL=dailly-email-template.js.map
+exports.MailTemplate = MailTemplate;
+//# sourceMappingURL=mail-template.js.map

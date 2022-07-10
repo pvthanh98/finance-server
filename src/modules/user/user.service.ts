@@ -1,18 +1,22 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FriendRequestAction, FriendStatus } from 'src/constants/friend.constant';
+import { Auth } from 'src/entities/auth.entity';
 import { Conversation } from 'src/entities/conversation';
 import { ConversationUser } from 'src/entities/conversation-user';
 import { Friend } from 'src/entities/friend.entity';
 import { User } from 'src/entities/user.entity';
 import { PaginationQueryType } from 'src/types/common.type';
+import { random } from 'src/utils/random.util';
+import { isExpired } from 'src/utils/time.util';
 import { Repository } from 'typeorm';
-import { ConversationService } from '../admin/conversation/conversation.service';
+import { EmailService } from '../shared_modules/email.service';
 import { S3Service } from '../shared_modules/s3.service';
 import { FormatPaginationQuery, formatPaginationResponse } from '../utils/format-pagination';
 import { UnAndAddFriendDto } from './dto/add-friend.dto';
+import { ForgotPasswordDto } from './dto/forgotpassword.dto';
 import { HandleFriendRequestDto } from './dto/handle-friend.dto';
+import { ResetPasswordDto } from './dto/reset.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { CreateUserDto } from './dto/user.register';
 import { UserRegisterResponse } from './type/user-register.response';
@@ -29,7 +33,10 @@ export class UserService {
         private conversationRepository: Repository<Conversation>,
         @InjectRepository(ConversationUser)
         private conversationUserRepository: Repository<ConversationUser>,
-        private s3Service: S3Service
+        @InjectRepository(Auth)
+        private authsRepository: Repository<Auth>,
+        private s3Service: S3Service,
+        private emailService: EmailService
     ) { }
 
     async getProfile(userId: string) {
@@ -40,7 +47,7 @@ export class UserService {
         });
         return {
             ...userProifle,
-            image: await this.s3Service.signedUrl({key: userProifle.image})
+            image: await this.s3Service.signedUrl({ key: userProifle.image })
         };
     }
 
@@ -56,7 +63,7 @@ export class UserService {
         });
         return {
             ...user,
-            image: await this.s3Service.signedUrl({key: user.image})
+            image: await this.s3Service.signedUrl({ key: user.image })
         };
     }
 
@@ -73,6 +80,59 @@ export class UserService {
             firstName: user.firstName,
             lastName: user.lastName
         };
+    }
+
+
+    async forgotPassword(dto: ForgotPasswordDto) {
+        const user = await this.usersRepository.findOne({
+            where: {
+                email: dto.email
+            }
+        })
+        const code = random(6);
+        if (!user) throw new NotFoundException({ message: 'Email not found' });
+        const generatedCode = await this.authsRepository.create({
+            code: code,
+            userId: user.id
+        })
+        await this.authsRepository.save(generatedCode);
+        this.emailService.sendMail({
+            subject: 'TP Site Forgot password',
+            title: 'Hi! Here is your code',
+            body: `Code: ${code}`,
+            to: dto.email
+        })
+        return {
+            code
+        };
+    }
+
+
+    async resetPassword(dto: ResetPasswordDto) {
+        const user = await this.usersRepository.findOne({
+            where: {
+                email: dto.email
+            }
+        });
+        if (!user) throw new BadRequestException({ message: 'Email not found' });
+        const auth = await this.authsRepository.findOne({
+            where: {
+                userId: user.id
+            }
+        })
+        if (!auth) throw new BadRequestException({ message: 'Wrong code' });
+        console.log(auth.createdAt);
+        
+        if(isExpired(auth.createdAt, 30)) throw new BadRequestException({message: 'Code Expire'});
+
+        const salt = bcrypt.genSaltSync(9);
+        const password = bcrypt.hashSync(`${dto.password}`, salt);
+        user.password = password;
+        await this.usersRepository.save(user);
+        return {
+            status: true
+        };
+
     }
 
     async findByEmail(email: string) {
@@ -400,7 +460,7 @@ export class UserService {
         }, {
             socketId
         })
-        
+
     }
 
 

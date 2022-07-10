@@ -10,3 +10,9 @@ export interface MessageType {
     title: string;
     expenses: Array<any>;
 }
+export interface MessageTypeDto {
+    to: string;
+    body: string;
+    subject: string;
+    title: string;
+}

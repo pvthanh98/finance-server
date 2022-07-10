@@ -31,6 +31,7 @@ const message_1 = require("./entities/message");
 const conversation_module_1 = require("./modules/admin/conversation/conversation.module");
 const chat_module_1 = require("./modules/chat/chat.module");
 const upload_module_1 = require("./modules/upload/upload.module");
+const auth_entity_1 = require("./entities/auth.entity");
 require("dotenv").config();
 let AppModule = class AppModule {
 };
@@ -55,7 +56,8 @@ AppModule = __decorate([
                     friend_entity_1.Friend,
                     conversation_1.Conversation,
                     conversation_user_1.ConversationUser,
-                    message_1.Message
+                    message_1.Message,
+                    auth_entity_1.Auth
                 ],
                 synchronize: true,
                 logging: false

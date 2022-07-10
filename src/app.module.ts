@@ -23,6 +23,7 @@ import { ConversationModule } from './modules/admin/conversation/conversation.mo
 import { ChatModule } from './modules/chat/chat.module';
 import { DashboardService } from './modules/dashboard/dashboard.service';
 import { UploadModule } from './modules/upload/upload.module';
+import { Auth } from './entities/auth.entity';
 require("dotenv").config()
 
 @Module({
@@ -45,7 +46,8 @@ require("dotenv").config()
         Friend,
         Conversation,
         ConversationUser,
-        Message
+        Message,
+        Auth
       ],
       synchronize: true,
       logging: false

@@ -14,6 +14,7 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const dailly_email_template_1 = require("./email-templates/dailly-email-template");
 const email_template_1 = require("./email-templates/email-template");
+const mail_template_1 = require("./email-templates/mail-template");
 const sgMail = require('@sendgrid/mail');
 let EmailService = class EmailService {
     constructor(configService) {
@@ -47,6 +48,26 @@ let EmailService = class EmailService {
             subject: message.subject,
             text: message.body,
             html: (0, dailly_email_template_1.dailyEmailTemplate)(message.title, message.body, message.expenses),
+        };
+        sgMail
+            .send(msg)
+            .then(() => {
+            console.log('Email sent');
+        })
+            .catch((error) => {
+            console.error(error);
+        });
+        return {
+            status: true
+        };
+    }
+    async sendMail(message) {
+        const msg = {
+            to: message.to,
+            from: 'TP Site<thanhphan.gg@gmail.com>',
+            subject: message.subject,
+            text: message.body,
+            html: (0, mail_template_1.MailTemplate)(message.title, message.body),
         };
         sgMail
             .send(msg)

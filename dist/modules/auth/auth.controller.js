@@ -14,6 +14,8 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
+const forgotpassword_dto_1 = require("../user/dto/forgotpassword.dto");
+const reset_dto_1 = require("../user/dto/reset.dto");
 const user_register_1 = require("../user/dto/user.register");
 const user_service_1 = require("../user/user.service");
 let AuthController = class AuthController {
@@ -23,6 +25,12 @@ let AuthController = class AuthController {
     userRegister(createUserDto) {
         return this.userService.registerUser(createUserDto);
     }
+    forgotPassword(dto) {
+        return this.userService.forgotPassword(dto);
+    }
+    resetPassword(dto) {
+        return this.userService.resetPassword(dto);
+    }
 };
 __decorate([
     (0, common_1.Post)('user/register'),
@@ -31,6 +39,20 @@ __decorate([
     __metadata("design:paramtypes", [user_register_1.CreateUserDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "userRegister", null);
+__decorate([
+    (0, common_1.Post)('user/forgot-password'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [forgotpassword_dto_1.ForgotPasswordDto]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "forgotPassword", null);
+__decorate([
+    (0, common_1.Post)('user/reset-password'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [reset_dto_1.ResetPasswordDto]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "resetPassword", null);
 AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [user_service_1.UserService])
