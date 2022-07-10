@@ -91,6 +91,10 @@ export class UserService {
         })
         const code = random(6);
         if (!user) throw new NotFoundException({ message: 'Email not found' });
+        await this.authsRepository.delete({
+            userId: user.id
+        })
+        
         const generatedCode = await this.authsRepository.create({
             code: code,
             userId: user.id
@@ -103,7 +107,7 @@ export class UserService {
             to: dto.email
         })
         return {
-            code
+            status: true
         };
     }
 
@@ -121,7 +125,6 @@ export class UserService {
             }
         })
         if (!auth) throw new BadRequestException({ message: 'Wrong code' });
-        console.log(auth.createdAt);
         
         if(isExpired(auth.createdAt, 30)) throw new BadRequestException({message: 'Code Expire'});
 
@@ -129,6 +132,9 @@ export class UserService {
         const password = bcrypt.hashSync(`${dto.password}`, salt);
         user.password = password;
         await this.usersRepository.save(user);
+        await this.authsRepository.delete({
+            userId: user.id
+        })
         return {
             status: true
         };
