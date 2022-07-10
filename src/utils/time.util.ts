@@ -3,5 +3,10 @@ export function isExpired (date: string, expireInSecond: number){
     const date1 : any = new Date(date);
     const miliseconds: number = dateNow - date1;    
     const seconds = miliseconds / 1000;  
+    console.log({seconds})
+    console.log({miliseconds});
+    console.log({dateNow});
+    console.log({date1});
+
     return seconds > expireInSecond;
 }
