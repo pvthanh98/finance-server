@@ -59,7 +59,7 @@ export declare class UserService {
     }>;
     registerUser(userDto: CreateUserDto): Promise<UserRegisterResponse>;
     forgotPassword(dto: ForgotPasswordDto): Promise<{
-        code: string;
+        status: boolean;
     }>;
     resetPassword(dto: ResetPasswordDto): Promise<{
         status: boolean;

@@ -32,6 +32,11 @@ const conversation_module_1 = require("./modules/admin/conversation/conversation
 const chat_module_1 = require("./modules/chat/chat.module");
 const upload_module_1 = require("./modules/upload/upload.module");
 const auth_entity_1 = require("./entities/auth.entity");
+const post_category_1 = require("./entities/post-category");
+const post_tag_1 = require("./entities/post-tag");
+const post_1 = require("./entities/post");
+const category_module_1 = require("./modules/admin/category/category.module");
+const post_tag_module_1 = require("./modules/admin/post_tag/post_tag.module");
 require("dotenv").config();
 let AppModule = class AppModule {
 };
@@ -57,7 +62,10 @@ AppModule = __decorate([
                     conversation_1.Conversation,
                     conversation_user_1.ConversationUser,
                     message_1.Message,
-                    auth_entity_1.Auth
+                    auth_entity_1.Auth,
+                    post_category_1.PostCategory,
+                    post_tag_1.PostTag,
+                    post_1.Post
                 ],
                 synchronize: true,
                 logging: false
@@ -69,7 +77,9 @@ AppModule = __decorate([
             common_module_1.CommonModule,
             conversation_module_1.ConversationModule,
             chat_module_1.ChatModule,
-            upload_module_1.UploadModule
+            upload_module_1.UploadModule,
+            category_module_1.CategoryModule,
+            post_tag_module_1.PostTagModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, tasks_service_1.TasksService, app_gateway_1.ChatGateway],

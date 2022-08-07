@@ -75,6 +75,9 @@ let UserService = class UserService {
         const code = (0, random_util_1.random)(6);
         if (!user)
             throw new common_1.NotFoundException({ message: 'Email not found' });
+        await this.authsRepository.delete({
+            userId: user.id
+        });
         const generatedCode = await this.authsRepository.create({
             code: code,
             userId: user.id
@@ -87,7 +90,7 @@ let UserService = class UserService {
             to: dto.email
         });
         return {
-            code
+            status: true
         };
     }
     async resetPassword(dto) {
@@ -105,13 +108,15 @@ let UserService = class UserService {
         });
         if (!auth)
             throw new common_1.BadRequestException({ message: 'Wrong code' });
-        console.log(auth.createdAt);
         if ((0, time_util_1.isExpired)(auth.createdAt, 30))
             throw new common_1.BadRequestException({ message: 'Code Expire' });
         const salt = bcrypt.genSaltSync(9);
         const password = bcrypt.hashSync(`${dto.password}`, salt);
         user.password = password;
         await this.usersRepository.save(user);
+        await this.authsRepository.delete({
+            userId: user.id
+        });
         return {
             status: true
         };

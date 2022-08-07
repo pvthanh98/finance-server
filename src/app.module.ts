@@ -24,6 +24,12 @@ import { ChatModule } from './modules/chat/chat.module';
 import { DashboardService } from './modules/dashboard/dashboard.service';
 import { UploadModule } from './modules/upload/upload.module';
 import { Auth } from './entities/auth.entity';
+import { PostCategory } from './entities/post-category';
+import { PostTag } from './entities/post-tag';
+import { Post } from './entities/post';
+import { CategoryModule } from './modules/admin/category/category.module';
+import { PostTagService } from './modules/admin/post_tag/post_tag.service';
+import { PostTagModule } from './modules/admin/post_tag/post_tag.module';
 require("dotenv").config()
 
 @Module({
@@ -47,7 +53,10 @@ require("dotenv").config()
         Conversation,
         ConversationUser,
         Message,
-        Auth
+        Auth,
+        PostCategory,
+        PostTag,
+        Post
       ],
       synchronize: true,
       logging: false
@@ -59,7 +68,9 @@ require("dotenv").config()
     CommonModule,
     ConversationModule,
     ChatModule,
-    UploadModule
+    UploadModule,
+    CategoryModule,
+    PostTagModule
   ],
   controllers: [AppController],
   providers: [AppService, TasksService, ChatGateway],
